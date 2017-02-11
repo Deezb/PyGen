@@ -13,7 +13,7 @@ log_info("run started at {0}".format(timex))
 import ast
 import data_handling_functions as dhf
 import sourceTree
-import test_generator
+import function_paths
 from pprint import pprint
 #from test_generator import FuncDef
 # from ast_decompiler import decompile
@@ -42,15 +42,18 @@ def main():
     import platform
     if platform.system() == 'Darwin':
         source_file = '/Users/davidbryan/Google Drive/Year4/006BigProject/Python/ast3/samples/test3.py'
+        output_dir = "/Volumes/C/EclipsePTC/solver/"
     else:
         source_directory = "d:/googledrive/Year4/006BigProject/Python/ast3/samples/"
         source_file = dhf.get_source_file(source_directory)
+        output_dir = "C:/EclipsePTC/solver/"
+
     print("file chosen is ", source_file)
     content = dhf.read_source_file(source_file)
-    source = ast.parse(content)
+    ast_tree_source = ast.parse(content)
 
     # this creates the data structure object
-    ast_object = sourceTree.SourceTree(source)
+    ast_object = sourceTree.SourceTree(ast_tree_source)
 
     # this runs the node extraction process
     ast_object.process_source_code()
@@ -63,30 +66,56 @@ def main():
 
     # then add the ClassDef and FunctionDef nodes to the structure
     print('Extract Functions and Classes')
+
+    # filter nodevals to extract the indices of Function Definiton Nodes
     list_of_functions = [ node_number[0] for node_number in ast_object.nodevals if node_number[5] == 'FunctionDef']
 
     # Start FunctionDef analysis
     print('Iterate through Functions')
     function_store = {}
+    function_objects_list = []
+    # iterate through the list of indices
     for function in list_of_functions:
-        function_object = test_generator.FuncDef(ast_object.nodevals[function][6])
+
+        # create an object to store this function
+        function_object = function_paths.FuncDef(ast_object.nodevals[function][6], output_dir)
+
+        # extract the functions name
         function_name = function_object.head.name
+        print('analysing function ',function_name)
+
+        #extract parameters from the function
         function_object.get_variables_from_args()
+
+        # extract returns and decorator_list (these functions are empty currently)
         function_object.get_decorator_list()
         function_object.get_return_list()
 
-        # this is sending the body of the function for splitting into it statements
+        # extract function body to create paths
         function_object.process_function_body()
-
+        print("At this point the function has been analysed to identify the possible paths")
+        print("there are 3 important data structures ready for the Symbolic analysis")
+        print("1. function_object.conditions_dict")
+        pprint(function_object.conditions_dict)
+        print("2. function_object.list_of_statements_in_function")
+        pprint(function_object.list_of_statements_in_function)
+        print("3. function_object.paths")
+        pprint(function_object.paths)
         # At this point the function is broken into paths and the paths need to be tested
-        function_object.make_path_dict()
+        #function_object.make_path_dict()
 
-        function_object.solve_paths()
-    pprint(function_object.new_dict)
+        function_object.symbolically_execute_paths()
 
+        print("path_dict")
+        for key,value in function_object.path_dict.items():
+            print(key,value)
+        function_objects_list.append(function_object)
 
-    #take first FunctionDef, send to analyser
-    #receive back set of data variables and return evaluation formaulae.
+        function_object.test_path_constraints()
+
+    # take first FunctionDef, send to analyser
+    # receive back set of data variables and return evaluation formulae.
+
     print('next phase')
 
     # send the dataset into a nose-parameterized structured file for creating

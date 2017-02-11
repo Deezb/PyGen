@@ -2,6 +2,8 @@ import data_handling_functions as dhf
 import ast
 from ast_decompiler import decompile
 import collections
+from uuid import uuid4
+from subprocess import Popen, PIPE
 import logging
 log_info = logging.info
 """This file is given the head node of a function and
@@ -9,9 +11,10 @@ returns a set of test data sets and results"""
 
 
 class FuncDef(object):
-    def __init__(self, node):
+    def __init__(self, node, output_dir):
         self.head = node
         self.variables = []
+        self.output_dir = output_dir
         self.symbolic_variables = {}
         self.constraint_list = []
         self.paths = [['list_identity']]
@@ -23,6 +26,7 @@ class FuncDef(object):
         self.variable_count = 0
         self.active_ifs = []
         self.new_dict = {}
+        self.path_dict = {}
         self.return_dict = {}
 
     """This function takes the function paramaters and sets up Symbolic variables and variables for them"""
@@ -61,6 +65,7 @@ class FuncDef(object):
             self.extract_section(statement)
 
     def extract_section(self, statement):
+        # to increase handling of data structures add case here
         if isinstance(statement, ast.Assign):
             self.process_assign(statement)
         elif isinstance(statement, ast.If):
@@ -116,6 +121,7 @@ class FuncDef(object):
             for value in section.value.elts:
                 vals.append(value.n)
         return vals
+
 
     def process_if(self, statement):
         # generate a unique identify the current "if" statement starting at IF001
@@ -220,51 +226,72 @@ class FuncDef(object):
     # ###################################################################################################
 
     def make_path_dict(self):
+        """
+        this function takes the three data structures and creates the code sequences
+        :return:
+        """
+        # define a named tuple structure for extracting tuple information by name
         a_statement = collections.namedtuple('a_statement', 'typz, lineno, equation ,parent')
+
         for line_of_code in self.list_of_statements_in_function:
             parent_sect = 'main'
             loc = a_statement(line_of_code[0],line_of_code[1],line_of_code[2],line_of_code[3])
             if loc.typz  == 'Assign':
+
+                # if it is in a named block
                 if dhf.iz(loc.parent):
                     parent_sect = loc.parent[-1]
+
                 self.new_dict.setdefault(parent_sect, []).append(loc.equation[0])
             if loc.typz == 'Return':
                 if dhf.iz(loc.parent):
+                    # this refers to the last element in the list of nested blocks
                     parent_sect = loc.parent[-1]
                 self.return_dict.setdefault(parent_sect, []).append(loc.equation[0])
 
-    def solve_paths(self):
+    def symbolically_execute_paths(self):
         for path in self.paths:
-            self.solve_a_path(path)
+            self.symbolically_execute_a_path(path)
 
-    def solve_a_path(self, path):
+    def symbolically_execute_a_path(self, path):
         """
         given a list of path conditions this function symbolically evaluates
         the conditions for satisfying this path
         """
         path.remove('list_identity')
 
-        a_statement = collections.namedtuple('a_statement', 'typz, lineno, equation ,parent')
-        an_equation = collections.namedtuple('an_equation', 'target, value')
+        # create an empty directory for storing postfix {symbol:symbolic value}
+        #  e.g.{'x': ['2','Sym0','*','5','+'], 'y': [ 'Sym1', '2', '+'] }
         this_path = {}
 
+        # create empty dict for storing a condition's name and its infix Symbolic variable expression
+        # i.e. {'IF001T' : ['Sym0', '>=', '10', 'and', 'Sym0', '<=', '20']}
         this_path_conditions = {}
+
+        # set-up an empty list to contain values for each variable as key
         for variable in self.variables:
             this_path.setdefault(variable, [])
+
+        # for each function parameter add the Symbolic Variable to the parameter variable
         for symbol,symbolic_value in self.symbolic_variables.items():
             this_path[symbol].append(symbolic_value)
 
-        # make the list of statements and conditions in the order they will be met.
-        # can't really sort as we will get to looping later
+        # list to store the set
         visited_blocks = []
+
+        # named tuple definitions
+        a_statement = collections.namedtuple('a_statement', 'typz, lineno, equation ,parent')
+        an_equation = collections.namedtuple('an_equation', 'target, value')
+
+        # iterate through the code to see if the line is in this path
         for line_of_code in self.list_of_statements_in_function:
 
             # named tuple extraction definitions
             loc = a_statement(line_of_code[0], line_of_code[1], line_of_code[2], line_of_code[3])
-            leq = an_equation(line_of_code[2][0][0], line_of_code[2][0][1])
+            leq = an_equation(loc.equation[0][0], loc.equation[0][1])
 
-            # if this line of code has a block identifier then only add it if the identifier is for this path
             targ = leq.target
+            # turn an equation into a postfix list representation
             valu = dhf.postfix_from_infix_list(leq.value.split(' '))
 
             # if the code is within a conditional section then loc.parent contains that value
@@ -272,6 +299,9 @@ class FuncDef(object):
 
                 # get the name of the containment area
                 target = loc.parent[-1]
+
+                # if the line of code has a block identifier then only
+                # add it if the identifier exists in this path
                 if target in path:
                     if target not in visited_blocks:
 
@@ -287,5 +317,85 @@ class FuncDef(object):
             # contd - or else it is the main section so it gets added
             else:
                 this_path = dhf.symbolise(this_path, targ, valu)
-            linetxt = 'xx'.join([item for item in path])
-            self.new_dict[linetxt] = [this_path,this_path_conditions]
+            linetx = [self.head.name]
+            linetx.extend([item for item in path])
+            linetxt = 'xx'.join(linetx)
+            self.path_dict[linetxt] = {"Variables": [this_path],"Conditions": [this_path_conditions]}
+        print("finished adding path sequences to path_dict")
+
+    def test_path_constraints(self):
+
+        count=0
+        for path in self.path_dict.keys():
+            randuuid = uuid4()
+            count +=1
+            conditions = self.path_dict[path]["Conditions"]
+            variables = self.path_dict[path]["Variables"]
+            f = lambda x: ' '.join(list(conditions[0].values())[x])
+            set_of_conditions = "(" + ') and ('.join([f(x) for x in list(range(len(list(conditions[0].values()))))])+")"
+            set_of_conditions = set_of_conditions.replace('==','=')
+            out, result_dict = logic(count, self.output_dir, str(path),set_of_conditions,randuuid)
+            # print(out)
+            print('result_dict',result_dict)
+            print("placeholder")
+
+
+def chunks(whole, size):
+    """Yield successive n-sized chunks from list chunks."""
+    for x in range(0, len(whole), size):
+        yield whole[x : x + size]
+
+# this needs a list of symbolic values and to create the files based on that list
+def logic(number, output_dir, path, constraint, randuuid):
+
+    filename = output_dir + "path" + str(number) + ".pl"
+    # write a .pl file
+    with open(filename, 'w') as log:
+        log.write(":- import ptc_solver.\n")
+        log.write("example(Sym0, Sym1):-\n")
+        log.write("    write(\"~~{0}~~{1}~~{2}~~##\"),\n".format(path, randuuid,constraint))
+        log.write("    ptc_solver__clean_up,\n")
+        log.write("    ptc_solver__default_declarations,\n")
+        log.write("    ptc_solver__type(Type0, real, range_bounds(-10.0, 30.0)),\n")
+        log.write("    ptc_solver__variable([Sym0, Sym1], Type0),\n")
+        log.write("    ptc_solver__sdl({0}),\n".format(constraint))
+        log.write("    ptc_solver__label_reals([Sym0, Sym1]),\n")
+        log.write("    write(\"##Sym0##\"),\n")
+        log.write("    write(Sym0),\n")
+        log.write("    write(\"##Sym1##\"),\n")
+        log.write("    write(Sym1).\n")
+    vol = ""
+    if output_dir == "/Volumes/C/EclipsePTC/solver/":
+        vol = "/Volumes/C/Program\ Files/ECLiPSe\ 6.1/lib/x86_64_nt/"
+
+    # run and get results from the .pl file
+
+    result = Popen([vol+"eclipse", "-f", filename, "-e", "example(Sym0, Sym1)."], shell=True, stdout=PIPE)
+    try:
+        outs, errs = result.communicate(timeout=10)
+    except TimeoutError:
+        result.kill()
+        outs, errs = result.communicate()
+
+    result.wait()
+    print("waiting done")
+
+    full_eclipseclp_output_text = outs.decode(encoding="utf-8")
+    path_condition_text = full_eclipseclp_output_text.split('~~')[1:4]
+
+    symbolic_results_list_pairs = full_eclipseclp_output_text.split('##')[2:]
+    pathuuid = path_condition_text[1]
+    result_dict = {}
+    symbolic_value= None
+    symbolic_result_list_rational = list(chunks(symbolic_results_list_pairs , 2))
+    for result_list in symbolic_result_list_rational:
+        symbolic_value= result_list
+        if '_' in result_list[1]:
+            symbolic_value = result_list[1].split('_')
+            symbolic_value = float(symbolic_value[0])/float(symbolic_value[1])
+        result_dict[result_list[0]] = symbolic_value
+    if path_condition_text and symbolic_value:
+        print("results for path ",path_condition_text[0],path_condition_text[2],symbolic_results_list_pairs, result_dict['Sym0'])
+    elif path_condition_text:
+        print("results for path ",path_condition_text[0],path_condition_text[2])
+    return outs, result_dict
