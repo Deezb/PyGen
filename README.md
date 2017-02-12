@@ -4,7 +4,7 @@
 #### this version works with simple parameters, but does work with loops, lists, dicts, sets, tuples or comprehensions.
 #### This code is part of a final yr college project to investigate the automatic generation of unit test data sets for Python.
 
-###When the program PyGen.py is run it requests a filename to analyse using the easygui open file dialogue. 
+###When the module pyGen.py is run it requests a filename to analyse using the easygui open file dialogue. 
 ### The user selects a .py module to analyse.
 ####The file is parsed using the ast module.
 #### Paths through the code are identified.
