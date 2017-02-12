@@ -10,7 +10,7 @@
 #### Paths through the code are identified.
 #### Symbolic Execution is used to produce constraints for each path, the constraints are searched for satisfiability using a constraint solver.
 #### (This version finds every path through a function and checks each one for satisfiability)
-It is proposed in future versions to check each stage of the pat for satisfiability to reduce path explosion by pruning unsatisfiable branches.
+It is proposed in future versions to check each stage moving down through the execution paths for satisfiability to reduce path explosion by pruning unsatisfiable branches, reducing time and memory wasted creating paths for impossible branches.
 
 ####This version writes a module of unit tests which contains all of the unit tests for a selected module. 
 The file of unit tests is currently placed in a folder in the same directory as the parent folder of the file being tested. 
