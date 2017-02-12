@@ -1,11 +1,10 @@
 # PyGen
 ##Generate unit tests for Python 3.5.2  
-### version 0.2.0 Creates Unit Tests, works with functions and conditionals and assignments over rational domains.
-####uses simple parameters, does not include loops, lists, dicts, sets, tuples, comprehensions.
-
+### version 0.0.2 Creates Unit Tests, works with functions, conditionals and assignments over rational domains.
+####this version uses simple parameters, does not include loops, lists, dicts, sets, tuples, comprehensions.
 #### This code is part of a college project to investigate the automatic generation of unit test data sets for Python.
 
-#### The work is based on the Symbolic Execution of code to produce constraints and resolving the constraints using a constraint solver.
+#### The work uses Symbolic Execution of code to produce constraints and resolving the constraints using a constraint solver.
 #### This version finds every path through a function and checks each one for satisfiability. 
 It writes a module of unit tests which contains all of the unit tests for a selected module. 
 The file of unit tests is currently placed in a folder in the same directory as the parent folder of the file being tested. 
