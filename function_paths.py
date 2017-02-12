@@ -225,29 +225,6 @@ class FuncDef(object):
     # ###     THE EXTRACTION OF PATHS HAS FINISHED NOW THE PATHS MUST BE PROCESSED
     # ###################################################################################################
 
-    def make_path_dict(self):
-        """
-        this function takes the three data structures and creates the code sequences
-        :return:
-        """
-        # define a named tuple structure for extracting tuple information by name
-        a_statement = collections.namedtuple('a_statement', 'typz, lineno, equation ,parent')
-
-        for line_of_code in self.list_of_statements_in_function:
-            parent_sect = 'main'
-            loc = a_statement(line_of_code[0],line_of_code[1],line_of_code[2],line_of_code[3])
-            if loc.typz  == 'Assign':
-
-                # if it is in a named block
-                if dhf.iz(loc.parent):
-                    parent_sect = loc.parent[-1]
-
-                self.new_dict.setdefault(parent_sect, []).append(loc.equation[0])
-            if loc.typz == 'Return':
-                if dhf.iz(loc.parent):
-                    # this refers to the last element in the list of nested blocks
-                    parent_sect = loc.parent[-1]
-                self.return_dict.setdefault(parent_sect, []).append(loc.equation[0])
 
     def symbolically_execute_paths(self):
         for path in self.paths:
@@ -283,7 +260,9 @@ class FuncDef(object):
         a_statement = collections.namedtuple('a_statement', 'typz, lineno, equation ,parent')
         an_equation = collections.namedtuple('an_equation', 'target, value')
 
+
         # iterate through the code to see if the line is in this path
+
         for line_of_code in self.list_of_statements_in_function:
 
             # named tuple extraction definitions
@@ -303,13 +282,13 @@ class FuncDef(object):
                 # if the line of code has a block identifier then only
                 # add it if the identifier exists in this path
                 if target in path:
-                    if target not in visited_blocks:
-
-                        # value is the areas condition split to a list
-                        value = self.conditions_dict[target][1].split(' ')
-                        value = dhf.extract(this_path, value)
-                        this_path_conditions[target] = value
-                        visited_blocks.append(target)
+                    for zone in loc.parent:
+                        if zone not in visited_blocks:
+                            # value is the areas condition split to a list
+                            value = self.conditions_dict[zone][1].split(' ')
+                            value = dhf.extract(this_path, value)
+                            this_path_conditions[zone] = value
+                            visited_blocks.append(zone)
 
                     # this_path needs to update its variables to accommodate the new line of code
                     this_path = dhf.symbolise(this_path, targ, valu)
@@ -327,18 +306,43 @@ class FuncDef(object):
 
         count=0
         for path in self.path_dict.keys():
-            randuuid = uuid4()
             count +=1
             conditions = self.path_dict[path]["Conditions"]
             variables = self.path_dict[path]["Variables"]
             f = lambda x: ' '.join(list(conditions[0].values())[x])
             set_of_conditions = "(" + ') and ('.join([f(x) for x in list(range(len(list(conditions[0].values()))))])+")"
             set_of_conditions = set_of_conditions.replace('==','=')
-            out, result_dict = logic(count, self.output_dir, str(path),set_of_conditions,randuuid)
+            out, result_dict = logic(count, self.output_dir, str(path),set_of_conditions)
             # print(out)
             print('result_dict',result_dict)
+            self.return_dict[path] = []
+            self.return_dict[path].append(result_dict)
+            self.return_dict[path].append(self.path_dict[path]['Variables'][0]['return'])
+
             print("placeholder")
 
+    def filter_returned_paths(self):
+        self.return_dict = {key:value for key,value in self.return_dict.items() if value[0]}
+
+
+    def evaluate_expected_results(self):
+        for keys, itemz in self.return_dict.items():
+            d6 = itemz[0].keys()
+            d5 = dhf.post_to_in(itemz[1])
+            print(d5)
+            d7 = []
+            for bitz in d5:
+                if bitz in d6:
+                    d7.append(str(itemz[0][bitz]))
+                else:
+                    d7.append(bitz)
+            d8 = ''.join(d7)
+            d9 = eval(d8)
+            print('symbolic equation= ', ''.join(d5))
+            print('inputs = ', itemz[0])
+            print('equation = ', d8)
+            print('result = ',d9)
+            self.return_dict[keys].append([d9])
 
 def chunks(whole, size):
     """Yield successive n-sized chunks from list chunks."""
@@ -346,14 +350,14 @@ def chunks(whole, size):
         yield whole[x : x + size]
 
 # this needs a list of symbolic values and to create the files based on that list
-def logic(number, output_dir, path, constraint, randuuid):
+def logic(number, output_dir, path, constraint):
 
     filename = output_dir + "path" + str(number) + ".pl"
     # write a .pl file
     with open(filename, 'w') as log:
         log.write(":- import ptc_solver.\n")
         log.write("example(Sym0, Sym1):-\n")
-        log.write("    write(\"~~{0}~~{1}~~{2}~~##\"),\n".format(path, randuuid,constraint))
+        log.write("    write(\"~~{0}~~{1}~~##\"),\n".format(path, constraint))
         log.write("    ptc_solver__clean_up,\n")
         log.write("    ptc_solver__default_declarations,\n")
         log.write("    ptc_solver__type(Type0, real, range_bounds(-10.0, 30.0)),\n")
@@ -381,7 +385,7 @@ def logic(number, output_dir, path, constraint, randuuid):
     print("waiting done")
 
     full_eclipseclp_output_text = outs.decode(encoding="utf-8")
-    path_condition_text = full_eclipseclp_output_text.split('~~')[1:4]
+    path_condition_text = full_eclipseclp_output_text.split('~~')[1:3]
 
     symbolic_results_list_pairs = full_eclipseclp_output_text.split('##')[2:]
     pathuuid = path_condition_text[1]
@@ -395,7 +399,17 @@ def logic(number, output_dir, path, constraint, randuuid):
             symbolic_value = float(symbolic_value[0])/float(symbolic_value[1])
         result_dict[result_list[0]] = symbolic_value
     if path_condition_text and symbolic_value:
-        print("results for path ",path_condition_text[0],path_condition_text[2],symbolic_results_list_pairs, result_dict['Sym0'])
+        print("results for path ",path_condition_text[0],path_condition_text[1],symbolic_results_list_pairs, result_dict['Sym0'])
     elif path_condition_text:
-        print("results for path ",path_condition_text[0],path_condition_text[2])
+        print("results for path ",path_condition_text[0],path_condition_text[1])
     return outs, result_dict
+
+
+
+
+#to extract a return list postfix from self.path_dict use
+#    self.path_dict['evaluatexxIF001FxxIF002FxxIF003F']['Variables'][0]['return']
+
+# to get the results of the path execution use
+#
+

@@ -1,5 +1,8 @@
-def xy():
-    pass
+def minxy(x, y):
+    if x < y:
+        return x
+    else:
+        return y
 
 def factorial(x):
     if x == 0:

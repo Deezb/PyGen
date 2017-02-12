@@ -14,6 +14,7 @@ import ast
 import data_handling_functions as dhf
 import sourceTree
 import function_paths
+import unit_test_maker as utm
 from pprint import pprint
 #from test_generator import FuncDef
 # from ast_decompiler import decompile
@@ -50,9 +51,11 @@ def main():
 
     print("file chosen is ", source_file)
     content = dhf.read_source_file(source_file)
+
+    # convert the file contents to an Abstract Syntax Tree
     ast_tree_source = ast.parse(content)
 
-    # this creates the data structure object
+    # this creates the data structure object for traversing the tree
     ast_object = sourceTree.SourceTree(ast_tree_source)
 
     # this runs the node extraction process
@@ -69,6 +72,7 @@ def main():
 
     # filter nodevals to extract the indices of Function Definiton Nodes
     list_of_functions = [ node_number[0] for node_number in ast_object.nodevals if node_number[5] == 'FunctionDef']
+    list_of_classes = [node_number[0] for node_number in ast_object.nodevals if node_number[5] == 'ClassDef']
 
     # Start FunctionDef analysis
     print('Iterate through Functions')
@@ -112,6 +116,15 @@ def main():
         function_objects_list.append(function_object)
 
         function_object.test_path_constraints()
+
+        # remove non satisfied paths
+        function_object.filter_returned_paths()
+
+        # eadd expected values to return_dict
+        function_object.evaluate_expected_results()
+
+        # send the result structure for extraction to Unit Test Files
+        utm.make_unit_tests(source_file, function_object.return_dict)
 
     # take first FunctionDef, send to analyser
     # receive back set of data variables and return evaluation formulae.

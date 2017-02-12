@@ -5,17 +5,6 @@ from sympy import simplify
 
 log_info = logging.info
 
-def is_str(st):
-    return isinstance(st, str)
-
-
-def is_int(input_a):
-    return isinstance(input_a, int)
-
-
-def is_float(input_a):
-    return isinstance(input_a, float)
-
 
 def add_to_list(base, separator, bits):
 
@@ -33,7 +22,7 @@ def iz(x):
     return True if x else False
 
 
-# get the fields for a given ast type
+# get the fields for any given ast type
 def get_fields(tree_object):
     log_info(str(tree_object))
     """
@@ -48,7 +37,13 @@ def get_fields(tree_object):
 
 def chunks(whole, size):
 
-    """Yield successive n-sized chunks from list chunks."""
+    """Yield successive n-element chunks from a list of chunks.
+    whole: list
+    size: int
+    return: list of size-element lists
+    e.g. whole = [1,2,3,4,5,6,7,8,9,10,11,12], size = 3, return = [1,2,3] [4,5,6] [7,8,9] [10,11,12]
+    chunks([a,b,c,d,e,f,g,h,i,j,k,l,m,n,o],5) [a,b,c,d,e] [f,g,h,i,j] [k,l,m,n,o]
+    """
     for x in range(0, len(whole), size):
         yield whole[x: x + size]
 
@@ -143,7 +138,7 @@ def symbolise(symbolic_dict, target,  assignment):
 
 def extract(symbolic_dict, condition):
     """
-    this function takes athe current symbolic dictionary and a condition and
+    this function takes the current symbolic dictionary and a condition and
     returns the symbolic expression as a list of operators and operands
 
     :param symbolic_dict:
@@ -172,10 +167,12 @@ def read_source_file(source_file):
     return content
 
 
+
+
+
 def main():
     sym_dict = {
         'x': ['Sym0', '*', '5', '+', '4'],
-
     }
     sym_dict2 = {key: postfix_from_infix_list(value) for key, value in sym_dict.items()}
 
