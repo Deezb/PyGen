@@ -34,7 +34,7 @@ This package has only been built successfully on a windows computer, the author 
 Install Python 3.5.2
 packages used includes
 
-sympy             - for reducing symbolic formaulae
-easygui           - to select files
-ast_decompiler    - to rebuild the source code represented by a node
+####sympy             - for reducing symbolic formaulae
+####easygui           - to select files
+####ast_decompiler    - to rebuild the source code represented by a node
 
