@@ -31,8 +31,8 @@ This package has only been built successfully on a windows computer, the author 
 ### add to path C:\ECLPS61\lib\i386_nt\
 ### set PATH=%PATH%;C:\ECLPS61\lib\i386_nt\
 
-Install Python 3.5.2
-packages used includes
+####Install Python 3.5.2
+####packages required include
 
 ####sympy             - for reducing symbolic formaulae
 ####easygui           - to select files
