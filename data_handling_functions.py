@@ -156,8 +156,8 @@ def extract(symbolic_dict, condition):
 
 
 def get_source_file(source_directory):
-    source_file = easygui.fileopenbox(
-                                      filetypes=["*.py"])
+    print("Please select a target file using the file selection dialogue.")
+    source_file = easygui.fileopenbox(filetypes=["*.py"],msg="Select a Python File to Analyse", title="Select Target File Dialogue",multiple=False)
     return source_file
 
 
@@ -165,9 +165,6 @@ def read_source_file(source_file):
     with open(source_file, 'r') as text:
         content = text.read()
     return content
-
-
-
 
 
 def main():

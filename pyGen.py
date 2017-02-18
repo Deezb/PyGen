@@ -1,35 +1,34 @@
 import time
-x = time.time()
-
 import datetime
-timex = datetime.datetime.fromtimestamp(int(time.time())).strftime('%d.%m.%Y.%H.%M.%S')
-
 import logging
-logging.basicConfig(filename='logs/pyGen'+timex+'.log',format= "%(levelname)s;%(filename)s;%(lineno)d;%(asctime)s.%(msecs)03d;%(message)s", datefmt="%H:%M:%S", level=logging.DEBUG)
-
-log_info = logging.info
-log_info("run started at {0}".format(timex))
-
 import ast
 import data_handling_functions as dhf
 import sourceTree
 import function_paths
 import unit_test_maker as utm
 from pprint import pprint
-#from test_generator import FuncDef
-# from ast_decompiler import decompile
+
+timex = datetime.datetime.fromtimestamp(int(time.time())).strftime('%d.%m.%Y.%H.%M.%S')
+
+logging.basicConfig(filename='../logs/pyGen'+timex+'.log',format= "%(levelname)s;%(filename)s;%(lineno)d;%(asctime)s.%(msecs)03d;%(message)s", datefmt="%H:%M:%S", level=logging.DEBUG)
+
+log_info = logging.info
+log_info("run started at {0}".format(timex))
 
 """
 PyGen Test Data.
- Author     :   David Bryan  C00188175@itcarlow.ie
+ Author     :   David Bryan.
+ Email      :   C00188175@itcarlow.ie
  Supervisor :   Christophe Meudec.
 
-This package is an investigation into the automatic generation of Unit Tests based on source code
-evaluation techniques of Symbolic Execution and Constraint logic programming.
+This package is an investigation into the automatic generation of Unit Tests from source code.
+The evaluation techniques of Symbolic Execution and Constraint logic programming are used.
 
-This file is the project handler.
+This module is the main program.
 It requires setting up a configuration settings section in a gui to handle the followiing
  1. Source File Name
+
+ # not implemented yet
  2. Test folder location
  3. ECLiPSe path location (may be set through the system path ECLIPSEDIR variable either.
  4. Temp directory setting (this package currently uses tempfiles for processing and allows the setting of a location
@@ -41,15 +40,22 @@ It requires setting up a configuration settings section in a gui to handle the f
 
 def main():
     import platform
+
+    # mac ECLiPSe installation not working yet, so Darwin/Mac  option is invalid at the moment
+    # the paths can be generated and the program fails at eclipse launch. needs try except
     if platform.system() == 'Darwin':
         source_file = '/Users/davidbryan/Google Drive/Year4/006BigProject/Python/ast3/samples/test3.py'
         output_dir = "/Volumes/C/EclipsePTC/solver/"
     else:
         source_directory = "d:/googledrive/Year4/006BigProject/Python/ast3/samples/"
-        source_file = dhf.get_source_file(source_directory)
+        try:
+            source_file = dhf.get_source_file(source_directory)
+        except TypeError:
+            print("This process requires the selection of a valid python source code file .py")
         output_dir = "C:/EclipsePTC/solver/"
 
     print("file chosen is ", source_file)
+
     content = dhf.read_source_file(source_file)
 
     # convert the file contents to an Abstract Syntax Tree
@@ -126,18 +132,6 @@ def main():
         # send the result structure for extraction to Unit Test Files
         utm.make_unit_tests(source_file, function_object.return_dict)
 
-    # take first FunctionDef, send to analyser
-    # receive back set of data variables and return evaluation formulae.
-
-    print('next phase')
-
-    # send the dataset into a nose-parameterized structured file for creating
-    # dynamic unit tests in a test class that inherits from unittest.Testcase
-    print('next phase')
-    # run unit tests, test code coverage
-    print('next phase')
-    #produce analysis
-    print('next phase')
 
 
 

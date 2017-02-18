@@ -319,30 +319,45 @@ class FuncDef(object):
             self.return_dict[path].append(result_dict)
             self.return_dict[path].append(self.path_dict[path]['Variables'][0]['return'])
 
-            print("placeholder")
+            print("\nAnalysing Path for satisfiability\n")
 
+    """
+    This method takes the processed paths and removes unsatisfiable paths from
+    the dictionary self.return_dict
+    """
     def filter_returned_paths(self):
         self.return_dict = {key:value for key,value in self.return_dict.items() if value[0]}
 
-
+    """
+    This method processes the satisfiable paths into a dictionary of
+    unit tests, each dictionary key is the flow path
+     each dictionary value is a list containing the expected result """
     def evaluate_expected_results(self):
+        #keys is the path name, itemz is a list with
+        # itemz[0] = input values
+        # itemz[1] = postfix return equation for path
         for keys, itemz in self.return_dict.items():
-            d6 = itemz[0].keys()
-            d5 = dhf.post_to_in(itemz[1])
-            print(d5)
-            d7 = []
-            for bitz in d5:
-                if bitz in d6:
-                    d7.append(str(itemz[0][bitz]))
+            symbolic_variables = itemz[0].keys()
+            infix_path_return_eqn = dhf.post_to_in(itemz[1])
+            return_eqn_with_inputs = []
+            for operand in infix_path_return_eqn:
+                if operand in symbolic_variables:
+                    return_eqn_with_inputs.append(str(itemz[0][operand]))
                 else:
-                    d7.append(bitz)
-            d8 = ''.join(d7)
-            d9 = eval(d8)
-            print('symbolic equation= ', ''.join(d5))
-            print('inputs = ', itemz[0])
-            print('equation = ', d8)
-            print('result = ',d9)
-            self.return_dict[keys].append([d9])
+                    return_eqn_with_inputs.append(operand)
+            equation_string = ''.join(return_eqn_with_inputs)
+            expected_return = eval(equation_string)
+            print("##################################################################################\n")
+            print(keys)
+            print(self.path_dict[keys]['Conditions'])
+            print("Producing Unit Test from satisfied results")
+            print('Symbolic equation for path = ', ''.join(infix_path_return_eqn))
+            print('Symbolic values for path   = ', itemz[0])
+            print('equation with values       = ', equation_string)
+            print('expected result            = ',expected_return,'\n')
+
+            self.return_dict[keys].append([expected_return])
+        print("##################################################################################\n")
 
 def chunks(whole, size):
     """Yield successive n-sized chunks from list chunks."""
@@ -382,7 +397,7 @@ def logic(number, output_dir, path, constraint):
         outs, errs = result.communicate()
 
     result.wait()
-    print("waiting done")
+    print("calling to ECLiPSe clp")
 
     full_eclipseclp_output_text = outs.decode(encoding="utf-8")
     path_condition_text = full_eclipseclp_output_text.split('~~')[1:3]
@@ -399,9 +414,9 @@ def logic(number, output_dir, path, constraint):
             symbolic_value = float(symbolic_value[0])/float(symbolic_value[1])
         result_dict[result_list[0]] = symbolic_value
     if path_condition_text and symbolic_value:
-        print("results for path ",path_condition_text[0],path_condition_text[1],symbolic_results_list_pairs, result_dict['Sym0'])
+        print("results for path \n\t",path_condition_text[0],path_condition_text[1],symbolic_results_list_pairs, result_dict['Sym0'])
     elif path_condition_text:
-        print("results for path ",path_condition_text[0],path_condition_text[1])
+        print("results for path \n\t",path_condition_text[0],path_condition_text[1])
     return outs, result_dict
 
 
