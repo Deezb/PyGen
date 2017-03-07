@@ -75,9 +75,21 @@ class FuncDef(object):
 
     def process_assign(self, statement):
         log_info('Assign found on line {0}'.format(statement.lineno))
+
         varslist = self.get_vars(statement)
         valslist = self.get_vals(statement)
-        varvals = list(zip(varslist, valslist))
+        varvals = []
+        if len(varslist) > 1:
+            if len(valslist) > 1:
+                # tuples on both sides, so zip them
+                varvals = list(zip(varslist, valslist))
+        else:
+            if len(valslist) > 1:
+                varvals = [(varslist[0], valslist)]
+            else:
+                varvals = [(varslist[0], valslist[0])]
+
+        #check that each variable is in the variable list or else add it.
         for varp in varslist:
             if varp in self.variables:
                 pass
@@ -112,6 +124,10 @@ class FuncDef(object):
         # check for Binop
         if hasattr(section.value, 'left'):
             return [decompile(section.value)]
+
+        # check for string
+        if hasattr(section.value, 's'):
+            return [section.value.s]
 
         # check for single value
         if hasattr(section.value, 'n'):
@@ -271,7 +287,7 @@ class FuncDef(object):
 
             targ = leq.target
             # turn an equation into a postfix list representation
-            valu = dhf.postfix_from_infix_list(leq.value.split(' '))
+            valu = dhf.postfix_from_infix_list(str(leq.value).split(' '))
 
             # if the code is within a conditional section then loc.parent contains that value
             if loc.parent:
@@ -312,7 +328,7 @@ class FuncDef(object):
             f = lambda x: ' '.join(list(conditions[0].values())[x])
             set_of_conditions = "(" + ') and ('.join([f(x) for x in list(range(len(list(conditions[0].values()))))])+")"
             set_of_conditions = set_of_conditions.replace('==','=')
-            out, result_dict = logic(count, self.output_dir, str(path),set_of_conditions)
+            out, result_dict = logic(count, self.output_dir, str(path),set_of_conditions, self.symbolic_variables)
             # print(out)
             print('result_dict',result_dict)
             self.return_dict[path] = []
@@ -346,7 +362,10 @@ class FuncDef(object):
                 else:
                     return_eqn_with_inputs.append(operand)
             equation_string = ''.join(return_eqn_with_inputs)
-            expected_return = eval(equation_string)
+            try:
+                expected_return = eval(equation_string)
+            except NameError:
+                expected_return= "\'" + equation_string + "\'"
             print("##################################################################################\n")
             print(keys)
             print(self.path_dict[keys]['Conditions'])
@@ -365,31 +384,35 @@ def chunks(whole, size):
         yield whole[x : x + size]
 
 # this needs a list of symbolic values and to create the files based on that list
-def logic(number, output_dir, path, constraint):
+def logic(number, output_dir, path, constraint, symbol_vars):
 
     filename = output_dir + "path" + str(number) + ".pl"
     # write a .pl file
+    symbols = sorted([value for value in symbol_vars.values()])
+    symboltext = ', '.join(symbols)
+
     with open(filename, 'w') as log:
         log.write(":- import ptc_solver.\n")
-        log.write("example(Sym0, Sym1):-\n")
+        log.write("example({0}):-\n".format(symboltext))
         log.write("    write(\"~~{0}~~{1}~~##\"),\n".format(path, constraint))
         log.write("    ptc_solver__clean_up,\n")
         log.write("    ptc_solver__default_declarations,\n")
         log.write("    ptc_solver__type(Type0, real, range_bounds(-10.0, 30.0)),\n")
-        log.write("    ptc_solver__variable([Sym0, Sym1], Type0),\n")
+        log.write("    ptc_solver__variable([{0}], Type0),\n".format(symboltext))
         log.write("    ptc_solver__sdl({0}),\n".format(constraint))
-        log.write("    ptc_solver__label_reals([Sym0, Sym1]),\n")
-        log.write("    write(\"##Sym0##\"),\n")
-        log.write("    write(Sym0),\n")
-        log.write("    write(\"##Sym1##\"),\n")
-        log.write("    write(Sym1).\n")
+        log.write("    ptc_solver__label_reals([{0}]),\n".format(symboltext))
+        extraction_text = []
+        for symbol in symbols:
+            extraction_text.append("    write(\"##{0}##\"),\n".format(symbol) + "    write({0})\n".format(symbol))
+        extraction_text = ','.join(extraction_text) + "."
+        log.write(extraction_text)
     vol = ""
     if output_dir == "/Volumes/C/EclipsePTC/solver/":
         vol = "/Volumes/C/Program\ Files/ECLiPSe\ 6.1/lib/x86_64_nt/"
 
     # run and get results from the .pl file
 
-    result = Popen([vol+"eclipse", "-f", filename, "-e", "example(Sym0, Sym1)."], shell=True, stdout=PIPE)
+    result = Popen([vol+"eclipse", "-f", filename, "-e", "example({0}).".format(symboltext)], shell=True, stdout=PIPE)
     try:
         outs, errs = result.communicate(timeout=10)
     except TimeoutError:
@@ -418,13 +441,3 @@ def logic(number, output_dir, path, constraint):
     elif path_condition_text:
         print("results for path \n\t",path_condition_text[0],path_condition_text[1])
     return outs, result_dict
-
-
-
-
-#to extract a return list postfix from self.path_dict use
-#    self.path_dict['evaluatexxIF001FxxIF002FxxIF003F']['Variables'][0]['return']
-
-# to get the results of the path execution use
-#
-

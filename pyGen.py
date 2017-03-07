@@ -39,8 +39,8 @@ It requires setting up a configuration settings section in a gui to handle the f
 
 
 def main():
-    import platform
-
+    import platform  # for examining the system that Python is running in
+    source_file = ""
     # mac ECLiPSe installation not working yet, so Darwin/Mac  option is invalid at the moment
     # the paths can be generated and the program fails at eclipse launch. needs try except
     if platform.system() == 'Darwin':
@@ -131,8 +131,6 @@ def main():
 
         # send the result structure for extraction to Unit Test Files
         utm.make_unit_tests(source_file, function_object.return_dict)
-
-
 
 
 if __name__=='__main__':

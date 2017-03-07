@@ -1,20 +1,21 @@
 from PLD2 import PLD
 import easygui
 import logging
-from sympy import simplify
 
 log_info = logging.info
 
 
-def add_to_list(base, separator, bits):
+def add_to_list(base, separator, sub_nodes):
 
     """
-    :param base:
-    :param separator:
-    :param bits:
-    :return:
+    example ("Hi", "..", ['dave','chris',greg'])  will return ['Hi..dave','Hi..chris','Hi..greg']
+    useful for concatenating the node attributes to a nodename for traversing the node tree
+    :param base: this is the first part of each entry
+    :param separator:   this is the joining string
+    :param bits:   list of endings
+    :return:   list of joined strings
     """
-    return [separator.join([base, bit]) for bit in bits]
+    return [separator.join([base, sub_node]) for sub_node in sub_nodes]
 
 
 def iz(x):
@@ -75,7 +76,18 @@ def postfix_from_infix_list(input_list):
                     closing_brackets = False
                 else:
                     output_list.append(popped)
-        if precedence == 10:
+        elif ']' in element:
+            group = element
+            its_a_list = True
+            while its_a_list:
+                popped = output_list.pop()
+                if '[' in popped:
+                    its_a_list = False
+                    group = popped + group
+                    output_list.append(group)
+                else:
+                    group = popped + group
+        elif precedence == 10:
             output_list.append(element)
         else:
             length_stack = len(operator_stack)
