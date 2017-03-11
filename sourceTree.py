@@ -14,23 +14,34 @@ class SourceTree(object):
         self.nodevals = []
 
     def process_source_code(self):
+        # this is a breadth first traversal of the source code AST to collect every node
         while len(self.queue) > 0:
             parent_sent = self.queue[0]
             current_parent_number = parent_sent[0]
+            # Note: get_child_nodes includes original parent in return list to ensure
+            # only checked parents are removed from the self.queue
             current_nodes_children = self.get_child_nodes_of(parent_sent)
             for child_node in current_nodes_children:
+
+
                 if child_node == parent_sent:
+                    # move parent node from queue to checked
                     self.all_nodes_list.append(parent_sent)
                     self.queue_del(child_node)
                 else:
+                    # place new child nodes on end of queue
                     self.count += 1
                     log_info("{0}, {1} is being added to the queue".format(self.count, child_node))
                     self.queue.append((self.count, child_node))
+
+                    # add a parent_array reference from this nodes number to this nodes parents number
                     self.parent_array[self.count] = current_parent_number
+
+                    # adds a reference of this nodes number to its parents child-array
                     self.child_array.setdefault(current_parent_number, []).append(self.count)
 
     def construct_node_data_list(self):
-        # this function takes each node in the end_list and adds more detail
+        # this function takes each node in the end_list appends more detail, lineno and
         for node_tuple in self.all_nodes_list:
             node_number, node_str = node_tuple
             valtype = eval('str(type((self.{0})))'.format(node_str))

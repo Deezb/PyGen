@@ -206,7 +206,7 @@ class FuncDef(object):
             self.paths = active_paths_true + active_paths_false + untouched_paths
             log_info('paths list now contains {0}'.format(self.paths))
         log_info(str(len(self.paths)))
-        log_info('If found test on line {0}, body on {1} orelse on {2}'.format(test_lineno, body_lineno, orelse_lineno))
+        log_info('IF found, TEST= {0}, BODY on {1} ORELSE on {2}'.format(test_lineno, body_lineno, orelse_lineno))
 
         # scan body children for nested items
         if body_lineno != 0:
@@ -325,9 +325,19 @@ class FuncDef(object):
             count +=1
             conditions = self.path_dict[path]["Conditions"]
             variables = self.path_dict[path]["Variables"]
+
+            # this lambda takes a comma separated list and coverts it to a string
+            # ['', 'not', '(', 'Sym0', '>', '5', ')'] gets converted to  "not ( Sym0 > 5)"
             f = lambda x: ' '.join(list(conditions[0].values())[x])
-            set_of_conditions = "(" + ') and ('.join([f(x) for x in list(range(len(list(conditions[0].values()))))])+")"
+            count_of_constraints = len(list(conditions[0].values()))
+
+            #creates asingle string with all constraints for ECLiPSe
+            set_of_conditions = "(" + ') and ('.join([f(x) for x in list(range(count_of_constraints))])+")"
+
+            # ECLiPSe uses a single = to denote equality, Python uses ==
             set_of_conditions = set_of_conditions.replace('==','=')
+
+            # call to write and run ECLiPSe for each path
             out, result_dict = logic(count, self.output_dir, str(path),set_of_conditions, self.symbolic_variables)
             # print(out)
             print('result_dict',result_dict)
@@ -407,11 +417,8 @@ def logic(number, output_dir, path, constraint, symbol_vars):
         extraction_text = ','.join(extraction_text) + "."
         log.write(extraction_text)
     vol = ""
-    if output_dir == "/Volumes/C/EclipsePTC/solver/":
-        vol = "/Volumes/C/Program\ Files/ECLiPSe\ 6.1/lib/x86_64_nt/"
 
     # run and get results from the .pl file
-
     result = Popen([vol+"eclipse", "-f", filename, "-e", "example({0}).".format(symboltext)], shell=True, stdout=PIPE)
     try:
         outs, errs = result.communicate(timeout=10)
@@ -426,12 +433,13 @@ def logic(number, output_dir, path, constraint, symbol_vars):
     path_condition_text = full_eclipseclp_output_text.split('~~')[1:3]
 
     symbolic_results_list_pairs = full_eclipseclp_output_text.split('##')[2:]
-    pathuuid = path_condition_text[1]
+
     result_dict = {}
     symbolic_value= None
     symbolic_result_list_rational = list(chunks(symbolic_results_list_pairs , 2))
     for result_list in symbolic_result_list_rational:
         symbolic_value= result_list
+        # if the result is in rational number string form 63_2 = 63/2 = 31.5
         if '_' in result_list[1]:
             symbolic_value = result_list[1].split('_')
             symbolic_value = float(symbolic_value[0])/float(symbolic_value[1])

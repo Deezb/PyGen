@@ -2,6 +2,7 @@ import time
 import datetime
 import logging
 import ast
+import sys
 import data_handling_functions as dhf
 import sourceTree
 import function_paths
@@ -39,20 +40,30 @@ It requires setting up a configuration settings section in a gui to handle the f
 
 
 def main():
-    import platform  # for examining the system that Python is running in
+
+    # check if 'conf' argument has been included in call
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'conf':
+            dhf.create_config()
+
+    config = dhf.get_config()
+
+    source_directory = config['SOURCE_DIR']
+    eclipse_dir = config['ECLIPSE_DIR']
+    eclipse_file_dir = config['ECLIPSE_FILES_DIR']
+    pygen_dir = config['PYGEN_DIR']
+
     source_file = ""
     # mac ECLiPSe installation not working yet, so Darwin/Mac  option is invalid at the moment
     # the paths can be generated and the program fails at eclipse launch. needs try except
-    if platform.system() == 'Darwin':
-        source_file = '/Users/davidbryan/Google Drive/Year4/006BigProject/Python/ast3/samples/test3.py'
-        output_dir = "/Volumes/C/EclipsePTC/solver/"
-    else:
-        source_directory = "d:/googledrive/Year4/006BigProject/Python/ast3/samples/"
-        try:
-            source_file = dhf.get_source_file(source_directory)
-        except TypeError:
-            print("This process requires the selection of a valid python source code file .py")
-        output_dir = "C:/EclipsePTC/solver/"
+
+    try:
+        source_file = dhf.get_source_file(source_directory)
+    except TypeError:
+        print("This process requires the selection of a valid python source code file .py")
+
+
+    output_dir = '/'.join([eclipse_file_dir,'solver/'])
 
     print("file chosen is ", source_file)
 
@@ -70,15 +81,15 @@ def main():
     # this creates the complete node list for the source code
     ast_object.construct_node_data_list()
 
-    # now we need to get the global variables and load them into a data structure which handles scope
-    print('global variable load')
-
-    # then add the ClassDef and FunctionDef nodes to the structure
-    print('Extract Functions and Classes')
+    # then add the FunctionDef nodes to the structure
+    print('Extracting Functions and classes')
+    log_info('Extracting Functions and classes')
 
     # filter nodevals to extract the indices of Function Definiton Nodes
     list_of_functions = [ node_number[0] for node_number in ast_object.nodevals if node_number[5] == 'FunctionDef']
     list_of_classes = [node_number[0] for node_number in ast_object.nodevals if node_number[5] == 'ClassDef']
+
+    log_info('classes = ',list_of_classes)
 
     # Start FunctionDef analysis
     print('Iterate through Functions')

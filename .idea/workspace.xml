@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="48792c8b-829b-4279-bfdf-6924106eda72" name="Default" comment="1. Corrected an error that left out conditions if the block had no code in it.&#10;&#10;2. This version is the first to create the unit tests for each path through each function and place them all in a file (using inheritence of the unittest.TestCase for the class definition).&#10;&#10;3.  This creates a test file in a pygen_unit_test directory in the folder above where the file being examined exists, the new test file is named with a 'test_' prepended on the module being tested.&#10;">
+    <list default="true" id="48792c8b-829b-4279-bfdf-6924106eda72" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/get.bat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/install.bat" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_handling_functions.py" afterPath="$PROJECT_DIR$/data_handling_functions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/function_paths.py" afterPath="$PROJECT_DIR$/function_paths.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyGen.py" afterPath="$PROJECT_DIR$/pyGen.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sourceTree.py" afterPath="$PROJECT_DIR$/sourceTree.py" />
+    </list>
+    <list id="6422c8f8-e801-48e8-aa99-d68e5e031b55" name="logslist" comment="">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/logs/pyGen23.01.2017.08.31.19.log" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/logs/pyGen23.01.2017.08.38.18.log" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/logs/pyGen23.01.2017.08.44.04.log" />
@@ -53,14 +62,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/logs/pyGen29.01.2017.18.21.49.log" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/logs/pyGen29.01.2017.18.23.09.log" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/logs/pyGen29.01.2017.18.35.06.log" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/samples/test4.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/samples/test5.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Unit_test_maker.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_handling_functions.py" afterPath="$PROJECT_DIR$/data_handling_functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/function_paths.py" afterPath="$PROJECT_DIR$/function_paths.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyGen.py" afterPath="$PROJECT_DIR$/pyGen.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trial.py" afterPath="$PROJECT_DIR$/trial.py" />
     </list>
     <ignored path=".idea/dataSources.local.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -71,11 +72,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/ast3$data_handling_functions.coverage" NAME="data_handling_functions Coverage Results" MODIFIED="1486559408071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ast3$data_handling_functions.coverage" NAME="data_handling_functions Coverage Results" MODIFIED="1488994470168" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ast3$trial.coverage" NAME="trial Coverage Results" MODIFIED="1488818415970" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ast3$test_generator.coverage" NAME="test_generator Coverage Results" MODIFIED="1485208907557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ast3$Unittests_in_test_test3.coverage" NAME="Unittests in test_test3 Coverage Results" MODIFIED="1487439704693" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pygen_unit_tests" />
-    <SUITE FILE_PATH="coverage/ast3$pyGen.coverage" NAME="pyGen Coverage Results" MODIFIED="1487682053896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ast3$pyGen.coverage" NAME="pyGen Coverage Results" MODIFIED="1489232353775" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -85,14 +86,14 @@
     <favorites_list name="ast3" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.22785667">
+    <splitter split-orientation="horizontal" split-proportion="0.48193592">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file leaf-file-name="pyGen.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/pyGen.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="17">
-                  <caret line="90" column="48" lean-forward="false" selection-start-line="90" selection-start-column="48" selection-end-line="90" selection-end-column="48" />
+                <state relative-caret-position="322">
+                  <caret line="123" column="17" lean-forward="false" selection-start-line="123" selection-start-column="17" selection-end-line="123" selection-end-column="17" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -127,8 +128,8 @@
           <file leaf-file-name="data_handling_functions.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/data_handling_functions.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="187">
-                  <caret line="11" column="59" lean-forward="false" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
+                <state relative-caret-position="221">
+                  <caret line="17" column="21" lean-forward="false" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
                   <folding>
                     <element signature="e#0#20#0" expanded="true" />
                   </folding>
@@ -136,23 +137,71 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="function_paths.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/function_paths.py">
+          <file leaf-file-name="test_test5.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/pygen_unit_tests/test_test5.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="7412">
-                  <caret line="442" column="28" lean-forward="false" selection-start-line="442" selection-start-column="28" selection-end-line="442" selection-end-column="28" />
+                <state relative-caret-position="51">
+                  <caret line="5" column="38" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="38" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="sourceTree.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/sourceTree.py">
+          <file leaf-file-name="function_paths.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/function_paths.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="34">
-                  <caret line="2" column="23" lean-forward="false" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
+                <state relative-caret-position="5797">
+                  <caret line="341" column="24" lean-forward="false" selection-start-line="341" selection-start-column="24" selection-end-line="341" selection-end-column="24" />
                   <folding>
                     <element signature="e#0#37#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="unit_test_maker.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/unit_test_maker.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="39">
+                  <caret line="4" column="7" lean-forward="true" selection-start-line="2" selection-start-column="26" selection-end-line="4" selection-end-column="7" />
+                  <folding>
+                    <element signature="e#0#9#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="install.bat" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/install.bat">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="68">
+                  <caret line="4" column="5" lean-forward="true" selection-start-line="4" selection-start-column="5" selection-end-line="4" selection-end-column="5" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="get.bat" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/get.bat">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="0">
+                  <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="sourceTree.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/sourceTree.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="238">
+                  <caret line="15" column="34" lean-forward="false" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+                  <folding>
+                    <element signature="e#0#37#0" expanded="true" />
+                    <element signature="e#424#1769#0" expanded="false" />
+                    <element signature="e#1819#3076#0" expanded="false" />
+                    <element signature="e#3123#3310#0" expanded="false" />
+                    <element signature="e#3367#5047#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -179,6 +228,7 @@
       <find>not an operator</find>
       <find>not found in assignment</find>
       <find>dhf</find>
+      <find>c:</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -188,21 +238,23 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/PLD2.py" />
-        <option value="$PROJECT_DIR$/sourceTree.py" />
         <option value="$PROJECT_DIR$/test_generator.py" />
         <option value="$PROJECT_DIR$/Unit_test_maker.py" />
         <option value="$PROJECT_DIR$/__init__.py" />
         <option value="$PROJECT_DIR$/samples/test.py" />
         <option value="$PROJECT_DIR$/samples/test3.py" />
         <option value="$PROJECT_DIR$/pygen_unit_tests/test_test3.py" />
-        <option value="$PROJECT_DIR$/unit_test_maker.py" />
         <option value="$PROJECT_DIR$/pygen_unit_tests/test_test4.py" />
         <option value="$PROJECT_DIR$/samples/test4.py" />
         <option value="$PROJECT_DIR$/samples/test5.py" />
-        <option value="$PROJECT_DIR$/pyGen.py" />
         <option value="$PROJECT_DIR$/trial.py" />
-        <option value="$PROJECT_DIR$/function_paths.py" />
         <option value="$PROJECT_DIR$/data_handling_functions.py" />
+        <option value="$PROJECT_DIR$/sourceTree.py" />
+        <option value="$PROJECT_DIR$/pyGen.py" />
+        <option value="$PROJECT_DIR$/function_paths.py" />
+        <option value="$PROJECT_DIR$/unit_test_maker.py" />
+        <option value="$PROJECT_DIR$/admin_run.py" />
+        <option value="$PROJECT_DIR$/install.bat" />
       </list>
     </option>
   </component>
@@ -213,10 +265,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1928" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1066" />
+    <option name="x" value="-1711" />
+    <option name="y" value="29" />
+    <option name="width" value="1934" />
+    <option name="height" value="1057" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -234,6 +286,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -276,8 +330,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -293,7 +345,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.trial">
+  <component name="RunManager" selected="Python.pyGen">
     <configuration default="false" name="pyGen" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -612,10 +664,10 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.trial" />
-        <item index="1" class="java.lang.String" itemvalue="Python.pyGen" />
-        <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in test_test3" />
-        <item index="3" class="java.lang.String" itemvalue="Python.data_handling_functions" />
+        <item index="0" class="java.lang.String" itemvalue="Python.pyGen" />
+        <item index="1" class="java.lang.String" itemvalue="Python.data_handling_functions" />
+        <item index="2" class="java.lang.String" itemvalue="Python.trial" />
+        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittests in test_test3" />
         <item index="4" class="java.lang.String" itemvalue="Python.test_generator" />
       </list>
     </recent_temporary>
@@ -629,6 +681,7 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="48792c8b-829b-4279-bfdf-6924106eda72" name="Default" comment="" />
+      <changelist id="6422c8f8-e801-48e8-aa99-d68e5e031b55" name="logslist" comment="" />
       <created>1484688887345</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -669,7 +722,21 @@
       <option name="project" value="LOCAL" />
       <updated>1488929200901</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="change Unit_test_maker to unit_test_maker">
+      <created>1488929528584</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1488929528584</updated>
+    </task>
+    <task id="LOCAL-00007" summary="change Unit_test_maker to unit_test_maker">
+      <created>1488929696231</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1488929696231</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -705,29 +772,29 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1928" y="-8" width="1936" height="1066" extended-state="6" />
-    <editor active="false" />
+    <frame x="-1711" y="29" width="1934" height="1057" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21375267" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Tool Output" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25830653" sideWeight="0.22121535" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39718616" sideWeight="0.22732124" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.454448" sideWeight="0.4936034" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25294748" sideWeight="0.48027718" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39718616" sideWeight="0.77267873" order="2" side_tool="false" content_ui="tabs" x="2039" y="-62" width="1479" height="970" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290461" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22465315" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="ANTLR Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.454448" sideWeight="0.4936034" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5080386" sideWeight="0.49093816" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290461" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="FLOATING" visible="false" show_stripe_button="true" weight="0.36836734" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="147" y="9" width="1613" height="978" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25830653" sideWeight="0.77878463" order="2" side_tool="false" content_ui="tabs" x="2039" y="-62" width="1479" height="970" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4051447" sideWeight="0.48720682" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4051447" sideWeight="0.48294243" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="FLOATING" visible="false" show_stripe_button="true" weight="0.36836734" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="-1909" y="761" width="1897" height="215" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -750,25 +817,46 @@
     <MESSAGE value="1. Corrected an error that left out conditions if the block had no code in it.&#10;&#10;2. This version is the first to create the unit tests for each path through each function and place them all in a file (using inheritence of the unittest.TestCase for the class definition).&#10;&#10;3.  This creates a test file in a pygen_unit_test directory in the folder above where the file being examined exists, the new test file is named with a 'test_' prepended on the module being tested.&#10;" />
     <MESSAGE value="Changes to output for viewer clarification." />
     <MESSAGE value="correcting upper case U to lower case" />
-    <option name="LAST_COMMIT_MESSAGE" value="correcting upper case U to lower case" />
+    <MESSAGE value="change Unit_test_maker to unit_test_maker" />
+    <option name="LAST_COMMIT_MESSAGE" value="change Unit_test_maker to unit_test_maker" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/function_paths.py</url>
-          <line>365</line>
+          <line>375</line>
           <option name="timeStamp" value="146" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/function_paths.py</url>
-          <line>367</line>
+          <line>377</line>
           <option name="timeStamp" value="153" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trial.py</url>
           <line>20</line>
           <option name="timeStamp" value="154" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/pyGen.py</url>
+          <line>84</line>
+          <option name="timeStamp" value="157" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/pyGen.py</url>
+          <line>104</line>
+          <option name="timeStamp" value="159" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/function_paths.py</url>
+          <line>400</line>
+          <option name="timeStamp" value="161" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/pyGen.py</url>
+          <line>143</line>
+          <option name="timeStamp" value="162" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -781,38 +869,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="155" />
+      <option name="time" value="163" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pyGen.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1088">
-          <caret line="67" column="21" lean-forward="false" selection-start-line="67" selection-start-column="21" selection-end-line="67" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sourceTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PLD2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data_handling_functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
@@ -839,6 +900,10 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#424#1769#0" expanded="false" />
+            <element signature="e#1819#3076#0" expanded="false" />
+            <element signature="e#3123#3310#0" expanded="false" />
+            <element signature="e#3367#5047#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -876,6 +941,10 @@
           <caret line="74" column="26" lean-forward="false" selection-start-line="74" selection-start-column="26" selection-end-line="74" selection-end-column="26" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#424#1769#0" expanded="false" />
+            <element signature="e#1819#3076#0" expanded="false" />
+            <element signature="e#3123#3310#0" expanded="false" />
+            <element signature="e#3367#5047#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -913,6 +982,10 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#424#1769#0" expanded="false" />
+            <element signature="e#1819#3076#0" expanded="false" />
+            <element signature="e#3123#3310#0" expanded="false" />
+            <element signature="e#3367#5047#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -947,6 +1020,10 @@
           <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#424#1769#0" expanded="false" />
+            <element signature="e#1819#3076#0" expanded="false" />
+            <element signature="e#3123#3310#0" expanded="false" />
+            <element signature="e#3367#5047#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1052,13 +1129,6 @@
       </provider>
     </entry>
     <entry file="file://C:/py352/Lib/logging/__init__.py" />
-    <entry file="file://$PROJECT_DIR$/pygen_unit_tests/test_test5.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="40" column="27" lean-forward="false" selection-start-line="40" selection-start-column="27" selection-end-line="40" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/samples/test5.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1095,6 +1165,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/unit_test_maker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="19" lean-forward="false" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_handling_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="17" column="21" lean-forward="false" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pygen_unit_tests/test_test5.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="5" column="38" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sourceTree.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="15" column="34" lean-forward="false" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#424#1769#0" expanded="false" />
+            <element signature="e#1819#3076#0" expanded="false" />
+            <element signature="e#3123#3310#0" expanded="false" />
+            <element signature="e#3367#5047#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/trial.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -1103,57 +1215,50 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/function_paths.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5797">
+          <caret line="341" column="24" lean-forward="false" selection-start-line="341" selection-start-column="24" selection-end-line="341" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pyGen.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="90" column="48" lean-forward="false" selection-start-line="90" selection-start-column="48" selection-end-line="90" selection-end-column="48" />
+        <state relative-caret-position="322">
+          <caret line="123" column="17" lean-forward="false" selection-start-line="123" selection-start-column="17" selection-end-line="123" selection-end-column="17" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/function_paths.py">
+    <entry file="file://$PROJECT_DIR$/admin_run.py" />
+    <entry file="file://$PROJECT_DIR$/unit_test_maker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7412">
-          <caret line="442" column="28" lean-forward="false" selection-start-line="442" selection-start-column="28" selection-end-line="442" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_handling_functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="59" lean-forward="false" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
+        <state relative-caret-position="39">
+          <caret line="4" column="7" lean-forward="true" selection-start-line="2" selection-start-column="26" selection-end-line="4" selection-end-column="7" />
           <folding>
-            <element signature="e#0#20#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Unit_test_maker.py">
+    <entry file="file://$PROJECT_DIR$/install.bat">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="19" lean-forward="false" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
+        <state relative-caret-position="68">
+          <caret line="4" column="5" lean-forward="true" selection-start-line="4" selection-start-column="5" selection-end-line="4" selection-end-column="5" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nit_test_maker.py">
+    <entry file="file://$PROJECT_DIR$/get.bat">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sourceTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="23" lean-forward="false" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>

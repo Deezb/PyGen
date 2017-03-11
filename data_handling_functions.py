@@ -1,9 +1,34 @@
 from PLD2 import PLD
 import easygui
 import logging
+import pickle
+import os
 
 log_info = logging.info
 
+def create_config():
+    """
+    this function is to ask a bunch of questions and create a configuration file
+    to set up the project
+    """
+    configs = {}
+    configs['ECLIPSE_DIR'] = easygui.diropenbox(msg='Please select ECLiPSe Program Directory', title='Select ECLiPSe program directory', default='C:/')
+    configs['ECLIPSE_FILES_DIR'] = easygui.diropenbox(msg='Please select ECLiPSe working files Directory', title='Select Working files directory for ECLiPSe', default='C:/')
+    configs['SOURCE_DIR'] = easygui.diropenbox(msg='Select Python Code Source folder', title='Select Source Directory', default='c:/')
+    configs['PYGEN_DIR'] =  os.path.dirname(__file__)
+
+    with open("pygenConfig.cfg",'wb') as cfg:
+        pickle.dump(configs, cfg)
+    return configs
+
+def get_config():
+    try:
+        with open('pygenConfig.cfg','rb') as cfg_file:
+            config = pickle.load(cfg_file)
+    except FileNotFoundError:
+        print("Config file not found, running config setup")
+        config = create_config()
+    return config
 
 def add_to_list(base, separator, sub_nodes):
 
@@ -180,6 +205,8 @@ def read_source_file(source_file):
 
 
 def main():
+    create_config()
+    """
     sym_dict = {
         'x': ['Sym0', '*', '5', '+', '4'],
     }
@@ -192,6 +219,6 @@ def main():
     print(sym_dict3)
     ret = post_to_in(['3','5','*','5','6','+','*'])
     print(ret)
-
+    """
 if __name__ == '__main__':
     main()
