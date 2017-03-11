@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48792c8b-829b-4279-bfdf-6924106eda72" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/get.bat" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/install.bat" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_handling_functions.py" afterPath="$PROJECT_DIR$/data_handling_functions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/function_paths.py" afterPath="$PROJECT_DIR$/function_paths.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyGen.py" afterPath="$PROJECT_DIR$/pyGen.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sourceTree.py" afterPath="$PROJECT_DIR$/sourceTree.py" />
     </list>
     <list id="6422c8f8-e801-48e8-aa99-d68e5e031b55" name="logslist" comment="">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/logs/pyGen23.01.2017.08.31.19.log" />
@@ -86,14 +81,14 @@
     <favorites_list name="ast3" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.48193592">
+    <splitter split-orientation="horizontal" split-proportion="0.28335723">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file leaf-file-name="pyGen.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/pyGen.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="322">
-                  <caret line="123" column="17" lean-forward="false" selection-start-line="123" selection-start-column="17" selection-end-line="123" selection-end-column="17" />
+                <state relative-caret-position="186">
+                  <caret line="13" column="32" lean-forward="true" selection-start-line="13" selection-start-column="32" selection-end-line="13" selection-end-column="32" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -147,11 +142,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="function_paths.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="function_paths.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/function_paths.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="5797">
-                  <caret line="341" column="24" lean-forward="false" selection-start-line="341" selection-start-column="24" selection-end-line="341" selection-end-column="24" />
+                <state relative-caret-position="172">
+                  <caret line="397" column="39" lean-forward="false" selection-start-line="397" selection-start-column="39" selection-end-line="397" selection-end-column="39" />
                   <folding>
                     <element signature="e#0#37#0" expanded="true" />
                   </folding>
@@ -181,11 +176,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="get.bat" pinned="false" current-in-tab="true">
+          <file leaf-file-name="get.bat" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/get.bat">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="0">
-                  <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+                <state relative-caret-position="17">
+                  <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -251,10 +246,11 @@
         <option value="$PROJECT_DIR$/data_handling_functions.py" />
         <option value="$PROJECT_DIR$/sourceTree.py" />
         <option value="$PROJECT_DIR$/pyGen.py" />
-        <option value="$PROJECT_DIR$/function_paths.py" />
         <option value="$PROJECT_DIR$/unit_test_maker.py" />
         <option value="$PROJECT_DIR$/admin_run.py" />
         <option value="$PROJECT_DIR$/install.bat" />
+        <option value="$PROJECT_DIR$/get.bat" />
+        <option value="$PROJECT_DIR$/function_paths.py" />
       </list>
     </option>
   </component>
@@ -736,7 +732,14 @@
       <option name="project" value="LOCAL" />
       <updated>1488929696231</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="testing installer batch files">
+      <created>1489251855065</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1489251855065</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -782,7 +785,7 @@
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25294748" sideWeight="0.48027718" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39718616" sideWeight="0.77267873" order="2" side_tool="false" content_ui="tabs" x="2039" y="-62" width="1479" height="970" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290461" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22465315" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2561366" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="ANTLR Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -818,7 +821,8 @@
     <MESSAGE value="Changes to output for viewer clarification." />
     <MESSAGE value="correcting upper case U to lower case" />
     <MESSAGE value="change Unit_test_maker to unit_test_maker" />
-    <option name="LAST_COMMIT_MESSAGE" value="change Unit_test_maker to unit_test_maker" />
+    <MESSAGE value="testing installer batch files" />
+    <option name="LAST_COMMIT_MESSAGE" value="testing installer batch files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1215,26 +1219,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/function_paths.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5797">
-          <caret line="341" column="24" lean-forward="false" selection-start-line="341" selection-start-column="24" selection-end-line="341" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyGen.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="123" column="17" lean-forward="false" selection-start-line="123" selection-start-column="17" selection-end-line="123" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/admin_run.py" />
     <entry file="file://$PROJECT_DIR$/unit_test_maker.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -1256,9 +1240,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/get.bat">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="17">
+          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyGen.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="13" column="32" lean-forward="true" selection-start-line="13" selection-start-column="32" selection-end-line="13" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/function_paths.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="397" column="39" lean-forward="false" selection-start-line="397" selection-start-column="39" selection-end-line="397" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

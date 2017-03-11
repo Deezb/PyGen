@@ -395,7 +395,7 @@ def chunks(whole, size):
 
 # this needs a list of symbolic values and to create the files based on that list
 def logic(number, output_dir, path, constraint, symbol_vars):
-
+    output_dir = output_dir.replace('\\','/')
     filename = output_dir + "path" + str(number) + ".pl"
     # write a .pl file
     symbols = sorted([value for value in symbol_vars.values()])
