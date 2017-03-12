@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48792c8b-829b-4279-bfdf-6924106eda72" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pyg.bat" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/install.bat" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/function_paths.py" afterPath="$PROJECT_DIR$/function_paths.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/get.bat" afterPath="$PROJECT_DIR$/get.bat" />
     </list>
     <list id="6422c8f8-e801-48e8-aa99-d68e5e031b55" name="logslist" comment="">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/logs/pyGen23.01.2017.08.31.19.log" />
@@ -145,7 +147,7 @@
           <file leaf-file-name="function_paths.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/function_paths.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="172">
+                <state relative-caret-position="-83">
                   <caret line="397" column="39" lean-forward="false" selection-start-line="397" selection-start-column="39" selection-end-line="397" selection-end-column="39" />
                   <folding>
                     <element signature="e#0#37#0" expanded="true" />
@@ -166,21 +168,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="install.bat" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/install.bat">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="68">
-                  <caret line="4" column="5" lean-forward="true" selection-start-line="4" selection-start-column="5" selection-end-line="4" selection-end-column="5" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file leaf-file-name="get.bat" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/get.bat">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="17">
-                  <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+                  <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -739,7 +731,14 @@
       <option name="project" value="LOCAL" />
       <updated>1489251855065</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="update filenames for pl files">
+      <created>1489272380140</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1489272380140</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -822,7 +821,8 @@
     <MESSAGE value="correcting upper case U to lower case" />
     <MESSAGE value="change Unit_test_maker to unit_test_maker" />
     <MESSAGE value="testing installer batch files" />
-    <option name="LAST_COMMIT_MESSAGE" value="testing installer batch files" />
+    <MESSAGE value="update filenames for pl files" />
+    <option name="LAST_COMMIT_MESSAGE" value="update filenames for pl files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1241,7 +1241,7 @@
     <entry file="file://$PROJECT_DIR$/get.bat">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
-          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1258,7 +1258,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/function_paths.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
+        <state relative-caret-position="-83">
           <caret line="397" column="39" lean-forward="false" selection-start-line="397" selection-start-column="39" selection-end-line="397" selection-end-column="39" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
