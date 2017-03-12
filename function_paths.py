@@ -19,6 +19,7 @@ class FuncDef(object):
         self.constraint_list = []
         self.paths = [['list_identity']]
         self.if_count = 0
+        self.while_count = 0
         self.list_of_statements_in_function = []
         self.conditions_dict = {}
         self.linecount = 0
@@ -72,6 +73,10 @@ class FuncDef(object):
             self.process_if(statement)
         elif isinstance(statement, ast.Return):
             self.process_return(statement)
+        elif isinstance(statement, ast.While):
+            self.process_while(statement)
+        else:
+            print("The statement, ",statement, " is not recognised by this process")
 
     def process_assign(self, statement):
         log_info('Assign found on line {0}'.format(statement.lineno))
@@ -232,8 +237,15 @@ class FuncDef(object):
         log_info('Return statement found, adding to list of statements = {0}'.format(text))
 
     # ###################################################################################################
-    # ###     THE EXTRACTION OF PATHS HAS FINISHED NOW THE PATHS MUST BE PROCESSED
+    # ###     THE EXTRACTION OF IF HAS FINISHED NOW IS THE PROCESSING OF WHILE
     # ###################################################################################################
+    def process_while(self,statement):
+        pass
+
+
+
+
+
     # ###################################################################################################
     # ###     THE EXTRACTION OF PATHS HAS FINISHED NOW THE PATHS MUST BE PROCESSED
     # ###################################################################################################

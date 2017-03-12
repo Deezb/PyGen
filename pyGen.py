@@ -114,6 +114,7 @@ def main():
 
         # extract function body to create paths
         function_object.process_function_body()
+
         print("At this point the function has been analysed to identify the possible paths")
         print("there are 3 important data structures ready for the Symbolic analysis")
         print("1. function_object.conditions_dict")
