@@ -23,20 +23,3 @@ The tests are based on the assertEqual test method. When a path is found to have
 It will be then the job of a programmer or validator to see that the allowable type of inputs should produce the given output values.
 
 In one of the first tests the input results was a rational 10.03 for a factorial function, factorials should only take integer values so this input set was an invalid answer, but only as the code allowed rational value to be entered, the code needed to check that the arguments are integers and this showed that the code was incomplete.
-
-#### Their are a number of requirements to go with this package.
-This package has only been built successfully on a windows computer, the author wasn't able to get the ECLiPSe package to work with other OSes, due to the complexity of requirements it is intended to create a docker image to abstract the configuration of the system for users.
-
-### ECLiPSe clp needs to be downloaded and installed,  I installed it at "C:\ECLPS61"
-### set ECLIPSEDIR=<wherever eclipse was installed, I used "set ECLIPSEDIR=C:\ECLPS61">
-### set ARCH to suit your OS "set ARCH=i386_nt"
-### add to path C:\ECLPS61\lib\i386_nt\
-### set PATH=%PATH%;C:\ECLPS61\lib\i386_nt\
-
-####Install Python 3.5.2
-####packages required include
-
-####sympy             - for reducing symbolic formaulae
-####easygui           - to select files
-####ast_decompiler    - to rebuild the source code represented by a node
-
