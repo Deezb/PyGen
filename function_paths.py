@@ -2,12 +2,51 @@ import data_handling_functions as dhf
 import ast
 from ast_decompiler import decompile
 import collections
-from uuid import uuid4
 from subprocess import Popen, PIPE
 import logging
 log_info = logging.info
 """This file is given the head node of a function and
 returns a set of test data sets and results"""
+
+
+def get_variable_name(section):
+    variable_names = []
+    for target in section.targets:
+
+        # for single entries
+        if hasattr(target, 'id'):
+            return [target.id]
+        # for multiple entries
+        for elt in target.elts:
+            # each elt represents a separate variable name
+            if str(elt.ctx).startswith("<_ast.Store object at"):
+                variable_names.append(elt.id)
+            elif str(elt.ctx).startswith("<_ast.Load object at"):
+                log_info("Load in vars, not allowed")
+    return variable_names
+
+
+# get assignment values from tree node
+# this function extracts the list of variable values from a tree node
+def get_variable_value(section):
+    variable_value_list = []
+
+    # check for Binop
+    if hasattr(section.value, 'left'):
+        return [decompile(section.value)]
+
+    # check for string
+    if hasattr(section.value, 's'):
+        return [section.value.s]
+
+    # check for single value
+    if hasattr(section.value, 'n'):
+        return [section.value.n]
+
+    if isinstance(section.value.elts, list):
+        for value in section.value.elts:
+            variable_value_list.append(value.n)
+    return variable_value_list
 
 
 class FuncDef(object):
@@ -25,7 +64,7 @@ class FuncDef(object):
         self.linecount = 0
         self.symbol_count = 0
         self.variable_count = 0
-        self.active_ifs = []
+        self.active_code_block = []
         self.new_dict = {}
         self.path_dict = {}
         self.return_dict = {}
@@ -65,6 +104,15 @@ class FuncDef(object):
         for statement in function_body:
             self.extract_section(statement)
 
+    # ###################################################################################################
+    # ###    EXTRACT ELEMENTS FROM A GIVEN NODE AND FORWARD THEM TO BE PROCESSED
+    # ###################################################################################################
+
+    # this function takes a list node and processes each element in the body of that node list
+    def extract_from(self, nodelist):
+        for statement in nodelist:
+            self.extract_section(statement)
+
     def extract_section(self, statement):
         # to increase handling of data structures add case here
         if isinstance(statement, ast.Assign):
@@ -76,73 +124,41 @@ class FuncDef(object):
         elif isinstance(statement, ast.While):
             self.process_while(statement)
         else:
-            print("The statement, ",statement, " is not recognised by this process")
+            print("The statement, ", statement, " is not recognised by this process")
+
+    # ###################################################################################################
+    # ###       END OF EXTRACTOR TYPE - FUNCTION SELECTOR
+    # ###       START OF ASSIGN EXTRACTOR
+    # ###################################################################################################
 
     def process_assign(self, statement):
         log_info('Assign found on line {0}'.format(statement.lineno))
 
-        varslist = self.get_vars(statement)
-        valslist = self.get_vals(statement)
-        varvals = []
-        if len(varslist) > 1:
-            if len(valslist) > 1:
+        variable_name_list = get_variable_name(statement)
+        variable_value_list = get_variable_value(statement)
+        variable_values = []
+        if len(variable_name_list) > 1:
+            if len(variable_value_list) > 1:
                 # tuples on both sides, so zip them
-                varvals = list(zip(varslist, valslist))
+                variable_values = list(zip(variable_name_list, variable_value_list))
         else:
-            if len(valslist) > 1:
-                varvals = [(varslist[0], valslist)]
+            if len(variable_value_list) > 1:
+                variable_values = [(variable_name_list[0], variable_value_list)]
             else:
-                varvals = [(varslist[0], valslist[0])]
+                variable_values = [(variable_name_list[0], variable_value_list[0])]
 
-        #check that each variable is in the variable list or else add it.
-        for varp in varslist:
-            if varp in self.variables:
-                pass
-            else:
-                self.variables.append(varp)
-        exlist = [node for node in self.active_ifs]
-        self.list_of_statements_in_function.append(('Assign', statement.lineno, varvals, exlist))
-        log_info(str(varvals))
+        # check that each variable is in the variable list or else add it.
+        for variable_name in variable_name_list:
+            if variable_name not in self.variables:
+                self.variables.append(variable_name)
+        exlist = [node for node in self.active_code_block]
+        self.list_of_statements_in_function.append(('Assign', statement.lineno, variable_values, exlist))
+        log_info(str(variable_values))
 
-    # get variable names from tree node
-    def get_vars(self, section):
-
-        varslist = []
-        for target in section.targets:
-
-            # for single entries
-            if hasattr(target, 'id'):
-                return [target.id]
-
-            # for multiple entries
-            for elt in target.elts:
-                # each elt represents a separate variable name
-                if str(elt.ctx).startswith("<_ast.Store object at"):
-                    varslist.append(elt.id)
-                elif str(elt.ctx).startswith("<_ast.Load object at"):
-                    log_info("Load in vars, not allowed")
-        return varslist
-
-    # get assignment values from tree node
-    def get_vals(self, section):
-        vals = []
-        # check for Binop
-        if hasattr(section.value, 'left'):
-            return [decompile(section.value)]
-
-        # check for string
-        if hasattr(section.value, 's'):
-            return [section.value.s]
-
-        # check for single value
-        if hasattr(section.value, 'n'):
-            return [section.value.n]
-
-        if isinstance(section.value.elts, list):
-            for value in section.value.elts:
-                vals.append(value.n)
-        return vals
-
+    # ###################################################################################################
+    # ###       END OF ASSIGN EXTRACTOR
+    # ###       START OF IF EXTRACTOR
+    # ###################################################################################################
 
     def process_if(self, statement):
         # generate a unique identify the current "if" statement starting at IF001
@@ -182,12 +198,13 @@ class FuncDef(object):
         active_paths_true = []
         active_paths_false = []
         log_info('paths contains {0}'.format(str(self.paths)))
-        parent = self.active_ifs
+        parent = self.active_code_block
         untouched_paths = []
 
         for path in self.paths:
             if parent:
-                if parent[-1] in path:
+                block_being_examined = parent[-1]
+                if block_being_examined in path:
                     log_info('{0} has {1}'.format(path, parent))
                     if body_lineno != 0:
                         active_paths_true += [path + [this_ift]]
@@ -213,16 +230,19 @@ class FuncDef(object):
         log_info(str(len(self.paths)))
         log_info('IF found, TEST= {0}, BODY on {1} ORELSE on {2}'.format(test_lineno, body_lineno, orelse_lineno))
 
-        # scan body children for nested items
+        # scan body children for nested items and recurse into them to extract them
+
+        # first the body section
         if body_lineno != 0:
-            self.active_ifs.append(this_ift)
+            self.active_code_block.append(this_ift)
             self.extract_if(statement.body)
-            self.active_ifs.pop()
-        # scan orelse children for nested items
+            self.active_code_block.pop()
+
+        # then the orelse 'False' path
         if orelse_lineno != 0:
-            self.active_ifs.append(this_iff)
+            self.active_code_block.append(this_iff)
             self.extract_if(statement.orelse)
-            self.active_ifs.pop()
+            self.active_code_block.pop()
 
     # this function takes an if statement and combines the contents into a
     # triple list.
@@ -230,29 +250,117 @@ class FuncDef(object):
         for section in node:
             self.extract_section(section)
 
+    # ###################################################################################################
+    # ###       END OF IF EXTRACTOR
+    # ###       START OF RETURN EXTRACTOR
+    # ###################################################################################################
+
     def process_return(self, statement):
         text = decompile(statement).strip('\n').replace("return ", "")
         line = statement.lineno
-        self.list_of_statements_in_function.append(('Return', line, [('return', text)], self.active_ifs))
+        self.list_of_statements_in_function.append(('Return', line, [('return', text)], self.active_code_block))
         log_info('Return statement found, adding to list of statements = {0}'.format(text))
 
     # ###################################################################################################
-    # ###     THE EXTRACTION OF IF HAS FINISHED NOW IS THE PROCESSING OF WHILE
-    # ###################################################################################################
-    def process_while(self,statement):
-        pass
-
-
-
-
-
-    # ###################################################################################################
-    # ###     THE EXTRACTION OF PATHS HAS FINISHED NOW THE PATHS MUST BE PROCESSED
-    # ###################################################################################################
-    # ###################################################################################################
-    # ###     THE EXTRACTION OF PATHS HAS FINISHED NOW THE PATHS MUST BE PROCESSED
+    # ###       END OF RETURN EXTRACTOR
+    # ###       START OF WHILE LOOPS EXTRACTOR
     # ###################################################################################################
 
+    def process_while(self, statement):
+
+        # first need to generate unique names for this loop structure
+        self.if_count += 1
+        this_wh_t = 'WH' + str.zfill(str(self.if_count), 3) + 'T'
+        this_wh_f = 'WH' + str.zfill(str(self.if_count), 3) + 'F'
+        loop_iteration_number = 0
+
+        # set up the sections of the structure defaulting to not existing
+        # initiate variables to store linenos for the three conditional sections
+        # the initial zero is for checking if there is any code in the section 0 means there isn't
+        test_lineno, body_lineno, orelse_lineno = 0, 0, 0
+
+        # extract the position and text of the test
+        test_lineno = statement.test.lineno
+        test_condition = decompile(statement.test)
+        self.conditions_dict[this_wh_t] = [test_lineno, test_condition]
+
+        # this might need adjusting to suit the phrasing of the prolog program
+        self.conditions_dict[this_wh_f] = [test_lineno, ' not ( ' + test_condition + ' )']
+
+        # if the body section exists get its start lineno
+        if dhf.get_fields(statement.body):
+            log_info('{0} exists'.format(this_wh_t))
+            body_lineno = statement.body[0].lineno
+        else:
+            log_info('{0} does not exist'.format(this_wh_t))
+
+        # if the orelse section exists get its start lineno
+        if dhf.get_fields(statement.orelse):
+            log_info('{0} exists'.format(this_wh_f))
+            orelse_lineno = statement.orelse[0].lineno
+        else:
+            log_info('{0} does not exist'.format(this_wh_f))
+
+        # add new paths to the path list
+        active_paths_true = []
+        active_paths_false = []
+        untouched_paths = []
+        log_info('paths contains {0}'.format(str(self.paths)))
+        parent = self.active_code_block
+
+        """
+        The next procedure takes each path that exists and checks each one to see if contains the
+        current path code block as the last element.
+        If it does then it needs to be replaced with the sub-graph of this while loop
+         this is done by splitting the path into three sections
+        """
+        for a_path in self.paths:
+            if parent:
+                block_that_this_node_is_in = parent[-1]
+                if block_that_this_node_is_in in a_path:
+                    log_info('{0} has {1}'.format(a_path, parent))
+                    if body_lineno != 0:
+                        active_paths_true += [a_path + [this_wh_t]]
+
+                    # if there is an else statement, add the orelse to paths
+                    if orelse_lineno != 0:
+                        active_paths_false += [a_path + [this_wh_f]]
+                else:
+                    log_info("{0} doesn't have {1}".format(a_path, parent))
+                    untouched_paths.append(a_path)
+
+            else:
+                if body_lineno != 0:
+                    active_paths_true += [a_path + [this_wh_t]]
+
+                # if there is an else statement, add the orelse to paths
+                if orelse_lineno != 0:
+                    active_paths_false += [a_path + [this_wh_f]]
+
+        if active_paths_true or active_paths_false:
+            self.paths = active_paths_true + active_paths_false + untouched_paths
+            log_info('paths list now contains {0}'.format(self.paths))
+        log_info(str(len(self.paths)))
+        log_info('IF found, TEST= {0}, BODY on {1} ORELSE on {2}'.format(test_lineno, body_lineno, orelse_lineno))
+
+        # scan body children for nested items and recurse into them to extract them
+
+        # first the body section
+        if body_lineno != 0:
+            self.active_code_block.append(this_wh_t)
+            self.extract_from(statement.body)
+            self.active_code_block.pop()
+
+        # then the orelse 'False' path
+        if orelse_lineno != 0:
+            self.active_code_block.append(this_wh_f)
+            self.extract_from(statement.orelse)
+            self.active_code_block.pop()
+
+    # ###################################################################################################
+    # ###       END OF WHILE LOOP EXTRACTOR
+    # ###       START OF SYMBOLIC EXECUTION SECTION
+    # ###################################################################################################
 
     def symbolically_execute_paths(self):
         for path in self.paths:
