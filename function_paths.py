@@ -2,12 +2,16 @@ import data_handling_functions as dhf
 import ast
 from ast_decompiler import decompile
 import collections
+from collections import Counter
 from subprocess import Popen, PIPE
+from itertools import chain
+from sympy import simplify
+
 import logging
 log_info = logging.info
 """This file is given the head node of a function and
 returns a set of test data sets and results"""
-
+LOOP_LIST = [0,1,5]
 
 def get_variable_name(section):
     variable_names = []
@@ -57,17 +61,19 @@ class FuncDef(object):
         self.symbolic_variables = {}
         self.constraint_list = []
         self.paths = [['list_identity']]
-        self.if_count = 0
+        self.conditional_count = 0
         self.while_count = 0
         self.list_of_statements_in_function = []
         self.conditions_dict = {}
         self.linecount = 0
         self.symbol_count = 0
         self.variable_count = 0
-        self.active_code_block = []
+        self.active_code_block = ['list_identity']
         self.new_dict = {}
         self.path_dict = {}
         self.return_dict = {}
+        self.path_codes_list = {}
+
 
     """This function takes the function paramaters and sets up Symbolic variables and variables for them"""
     def get_variables_from_args(self):
@@ -126,6 +132,13 @@ class FuncDef(object):
         else:
             print("The statement, ", statement, " is not recognised by this process")
 
+    # this method adds the name of the current node to active, then extracts recursively,
+    # then pops the name back off active
+    def recurse_node(self, name, node):
+        self.active_code_block.append(name)
+        self.extract_from(node)
+        self.active_code_block.pop()
+
     # ###################################################################################################
     # ###       END OF EXTRACTOR TYPE - FUNCTION SELECTOR
     # ###       START OF ASSIGN EXTRACTOR
@@ -151,8 +164,10 @@ class FuncDef(object):
         for variable_name in variable_name_list:
             if variable_name not in self.variables:
                 self.variables.append(variable_name)
-        exlist = [node for node in self.active_code_block]
-        self.list_of_statements_in_function.append(('Assign', statement.lineno, variable_values, exlist))
+
+        # need to make a copy of the state of this variable to prevent dynamic updating of list
+        current_active_list = [node for node in self.active_code_block]
+        self.list_of_statements_in_function.append(('Assign', statement.lineno, variable_values, current_active_list))
         log_info(str(variable_values))
 
     # ###################################################################################################
@@ -162,9 +177,9 @@ class FuncDef(object):
 
     def process_if(self, statement):
         # generate a unique identify the current "if" statement starting at IF001
-        self.if_count += 1
-        this_ift = 'IF' + str.zfill(str(self.if_count), 3) + 'T'
-        this_iff = 'IF' + str.zfill(str(self.if_count), 3) + 'F'
+        self.conditional_count += 1
+        this_ift = 'IF' + str.zfill(str(self.conditional_count), 3) + 'T'
+        this_iff = 'IF' + str.zfill(str(self.conditional_count), 3) + 'F'
 
         # initiate variables to store linenos for the three conditional sections
         # the initial zero is for checking if there is any code in the section 0 means there isn't
@@ -198,31 +213,23 @@ class FuncDef(object):
         active_paths_true = []
         active_paths_false = []
         log_info('paths contains {0}'.format(str(self.paths)))
-        parent = self.active_code_block
+        parents = self.active_code_block
         untouched_paths = []
 
         for path in self.paths:
-            if parent:
-                block_being_examined = parent[-1]
-                if block_being_examined in path:
-                    log_info('{0} has {1}'.format(path, parent))
-                    if body_lineno != 0:
-                        active_paths_true += [path + [this_ift]]
-
-                    # if there is an else statement, add the orelse to paths
-                    if orelse_lineno != 0:
-                        active_paths_false += [path + [this_iff]]
-                else:
-                    log_info("{0} doesn't have {1}".format(path, parent))
-                    untouched_paths.append(path)
-
-            else:
+            direct_parent = parents[-1]
+            if direct_parent in path:
+                log_info('{0} has {1}'.format(path, parents))
                 if body_lineno != 0:
                     active_paths_true += [path + [this_ift]]
 
                 # if there is an else statement, add the orelse to paths
                 if orelse_lineno != 0:
                     active_paths_false += [path + [this_iff]]
+            else:
+                log_info("{0} doesn't have {1}".format(path, parents))
+                untouched_paths.append(path)
+
 
         if active_paths_true or active_paths_false:
             self.paths = active_paths_true + active_paths_false + untouched_paths
@@ -230,25 +237,13 @@ class FuncDef(object):
         log_info(str(len(self.paths)))
         log_info('IF found, TEST= {0}, BODY on {1} ORELSE on {2}'.format(test_lineno, body_lineno, orelse_lineno))
 
-        # scan body children for nested items and recurse into them to extract them
-
         # first the body section
         if body_lineno != 0:
-            self.active_code_block.append(this_ift)
-            self.extract_if(statement.body)
-            self.active_code_block.pop()
+            self.recurse_node(this_ift, statement.body)
 
         # then the orelse 'False' path
         if orelse_lineno != 0:
-            self.active_code_block.append(this_iff)
-            self.extract_if(statement.orelse)
-            self.active_code_block.pop()
-
-    # this function takes an if statement and combines the contents into a
-    # triple list.
-    def extract_if(self, node):
-        for section in node:
-            self.extract_section(section)
+            self.recurse_node(this_iff, statement.orelse)
 
     # ###################################################################################################
     # ###       END OF IF EXTRACTOR
@@ -269,9 +264,9 @@ class FuncDef(object):
     def process_while(self, statement):
 
         # first need to generate unique names for this loop structure
-        self.if_count += 1
-        this_wh_t = 'WH' + str.zfill(str(self.if_count), 3) + 'T'
-        this_wh_f = 'WH' + str.zfill(str(self.if_count), 3) + 'F'
+        self.conditional_count += 1
+        this_wh_t = 'WH' + str.zfill(str(self.conditional_count), 3) + 'T'
+        this_wh_f = 'WH' + str.zfill(str(self.conditional_count), 3) + 'F'
         loop_iteration_number = 0
 
         # set up the sections of the structure defaulting to not existing
@@ -303,140 +298,125 @@ class FuncDef(object):
 
         # add new paths to the path list
         active_paths_true = []
-        active_paths_false = []
+        #active_paths_false = []
         untouched_paths = []
         log_info('paths contains {0}'.format(str(self.paths)))
-        parent = self.active_code_block
+        parents = self.active_code_block
 
-        """
-        The next procedure takes each path that exists and checks each one to see if contains the
-        current path code block as the last element.
-        If it does then it needs to be replaced with the sub-graph of this while loop
-         this is done by splitting the path into three sections
-        """
         for a_path in self.paths:
-            if parent:
-                block_that_this_node_is_in = parent[-1]
-                if block_that_this_node_is_in in a_path:
-                    log_info('{0} has {1}'.format(a_path, parent))
-                    if body_lineno != 0:
-                        active_paths_true += [a_path + [this_wh_t]]
 
-                    # if there is an else statement, add the orelse to paths
-                    if orelse_lineno != 0:
-                        active_paths_false += [a_path + [this_wh_f]]
-                else:
-                    log_info("{0} doesn't have {1}".format(a_path, parent))
-                    untouched_paths.append(a_path)
+            direct_parent_code_block = parents[-1]
 
-            else:
+            if direct_parent_code_block in a_path:
+                log_info('{0} has {1}'.format(a_path, direct_parent_code_block))
                 if body_lineno != 0:
-                    active_paths_true += [a_path + [this_wh_t]]
+                    for path_cycles in LOOP_LIST:
+                        current_new_path = [a_path + [this_wh_f] + [this_wh_t] * path_cycles ]
+                        active_paths_true += current_new_path
+                        print('active_paths += ', current_new_path )
+            else:
+                log_info("{0} doesn't have {1}".format(a_path, parents))
+                untouched_paths.append(a_path)
 
-                # if there is an else statement, add the orelse to paths
-                if orelse_lineno != 0:
-                    active_paths_false += [a_path + [this_wh_f]]
-
-        if active_paths_true or active_paths_false:
-            self.paths = active_paths_true + active_paths_false + untouched_paths
+        if active_paths_true:
+            self.paths = active_paths_true + untouched_paths
             log_info('paths list now contains {0}'.format(self.paths))
         log_info(str(len(self.paths)))
         log_info('IF found, TEST= {0}, BODY on {1} ORELSE on {2}'.format(test_lineno, body_lineno, orelse_lineno))
 
-        # scan body children for nested items and recurse into them to extract them
-
         # first the body section
         if body_lineno != 0:
-            self.active_code_block.append(this_wh_t)
-            self.extract_from(statement.body)
-            self.active_code_block.pop()
+            self.recurse_node(this_wh_t, statement.body)
 
         # then the orelse 'False' path
         if orelse_lineno != 0:
-            self.active_code_block.append(this_wh_f)
-            self.extract_from(statement.orelse)
-            self.active_code_block.pop()
+            self.recurse_node(this_wh_f, statement.orelse)
 
     # ###################################################################################################
     # ###       END OF WHILE LOOP EXTRACTOR
     # ###       START OF SYMBOLIC EXECUTION SECTION
     # ###################################################################################################
 
-    def symbolically_execute_paths(self):
-        for path in self.paths:
-            self.symbolically_execute_a_path(path)
-
-    def symbolically_execute_a_path(self, path):
+    def build_paths(self):
         """
         given a list of path conditions this function symbolically evaluates
         the conditions for satisfying this path
         """
-        path.remove('list_identity')
+        #
+        block_code_dict = {}
+        path_dicty = {}
+        #  ['IF001F', 'WH002F', 'IF001T', 'WH003T', 'list_identity', 'WH003F', 'WH002T']
+        all_block_list = list(set(chain.from_iterable(self.paths)))
+        for block in all_block_list:
+            block_code_dict.setdefault(block, [])
+        for line in self.list_of_statements_in_function:
+            block_code_dict[line[3][-1]].append(line)
 
-        # create an empty directory for storing postfix {symbol:symbolic value}
-        #  e.g.{'x': ['2','Sym0','*','5','+'], 'y': [ 'Sym1', '2', '+'] }
-        this_path = {}
+        print('check for a')
 
-        # create empty dict for storing a condition's name and its infix Symbolic variable expression
-        # i.e. {'IF001T' : ['Sym0', '>=', '10', 'and', 'Sym0', '<=', '20']}
-        this_path_conditions = {}
+        # loop through paths
+        for path in self.paths:
+            function_name = [self.head.name]
+            function_name.extend([item for item in path])
+            path_name = 'xx'.join(function_name)
+            basic_run = block_code_dict['list_identity']
+            path.remove('list_identity')
+            loops = Counter(path)
 
-        # set-up an empty list to contain values for each variable as key
+
+            for block_name in path:
+                block_start = self.conditions_dict[block_name][0]
+                block_value = self.conditions_dict[block_name][1]
+                block_statements = block_code_dict[block_name]
+
+                start = 0
+                if basic_run:
+                    while basic_run[start][1] < block_start and start < len(basic_run)-1:
+                        start += 1
+
+                if loops[block_name] == 1 and not block_statements:
+                    basic_run = basic_run[:start] + [[block_value,block_start]] + basic_run[start:]
+                else:
+                    basic_run = basic_run[:start] + ([[block_value,block_start]] + block_code_dict[block_name]) + basic_run[start:]
+
+                print("what now")
+            path_dicty[path_name] = basic_run
+
+        print('path building complete, paths found = {0}'.format(len(path_dicty)) )
+        self.path_codes_list = path_dicty
+
+    def symbolically_execute_paths(self):
+        for path, codes_list in self.path_codes_list.items():
+            self.symbolically_execute_a_path(path, codes_list)
+
+    def symbolically_execute_a_path(self, path, codes_list):
+        this_path_variables = {}
+        this_path_constraints = {}
         for variable in self.variables:
-            this_path.setdefault(variable, [])
+            this_path_variables.setdefault(variable, [])
 
-        # for each function parameter add the Symbolic Variable to the parameter variable
-        for symbol,symbolic_value in self.symbolic_variables.items():
-            this_path[symbol].append(symbolic_value)
+        for variable_name, symbolic_variable_name in self.symbolic_variables.items():
+            this_path_variables[variable_name].append(symbolic_variable_name)
 
-        # list to store the set
-        visited_blocks = []
+        for line in codes_list:
+            if isinstance(line, tuple):
+                # process an assignment
+                target = line[2][0][0]
+                # convert the equation into a list of infix elements
+                value = str(line[2][0][1]).split(' ')
+                value = dhf.postfix_from_infix_list(value)
+                this_path_variables = dhf.symbolise(this_path_variables, target, value)
 
-        # named tuple definitions
-        a_statement = collections.namedtuple('a_statement', 'typz, lineno, equation ,parent')
-        an_equation = collections.namedtuple('an_equation', 'target, value')
-
-
-        # iterate through the code to see if the line is in this path
-
-        for line_of_code in self.list_of_statements_in_function:
-
-            # named tuple extraction definitions
-            loc = a_statement(line_of_code[0], line_of_code[1], line_of_code[2], line_of_code[3])
-            leq = an_equation(loc.equation[0][0], loc.equation[0][1])
-
-            targ = leq.target
-            # turn an equation into a postfix list representation
-            valu = dhf.postfix_from_infix_list(str(leq.value).split(' '))
-
-            # if the code is within a conditional section then loc.parent contains that value
-            if loc.parent:
-
-                # get the name of the containment area
-                target = loc.parent[-1]
-
-                # if the line of code has a block identifier then only
-                # add it if the identifier exists in this path
-                if target in path:
-                    for zone in loc.parent:
-                        if zone not in visited_blocks:
-                            # value is the areas condition split to a list
-                            value = self.conditions_dict[zone][1].split(' ')
-                            value = dhf.extract(this_path, value)
-                            this_path_conditions[zone] = value
-                            visited_blocks.append(zone)
-
-                    # this_path needs to update its variables to accommodate the new line of code
-                    this_path = dhf.symbolise(this_path, targ, valu)
-
-            # contd - or else it is the main section so it gets added
+                pass
+            elif isinstance(line, list):
+                # process a conditional
+                # when a conditional is met we need to extract its meaning from the current symbolic execution
+                # and add the constraint to the set of path constraints
+                constraint  =  dhf.extract(this_path_variables, line[0].split(' '))
+                this_path_constraints.setdefault(path, []).append(constraint)
             else:
-                this_path = dhf.symbolise(this_path, targ, valu)
-            linetx = [self.head.name]
-            linetx.extend([item for item in path])
-            linetxt = 'xx'.join(linetx)
-            self.path_dict[linetxt] = {"Variables": [this_path],"Conditions": [this_path_conditions]}
-        print("finished adding path sequences to path_dict")
+                print("Weird element has crawled into the the path structure, it is not a tuple or a list")
+        self.path_dict[path] = {"Variables": [this_path_variables], "Conditions": [this_path_constraints]}
 
     def test_path_constraints(self):
 
@@ -448,11 +428,11 @@ class FuncDef(object):
 
             # this lambda takes a comma separated list and coverts it to a string
             # ['', 'not', '(', 'Sym0', '>', '5', ')'] gets converted to  "not ( Sym0 > 5)"
-            f = lambda x: ' '.join(list(conditions[0].values())[x])
-            count_of_constraints = len(list(conditions[0].values()))
+            lambdalise = lambda x: ' '.join(list(conditions[0].values())[0][x])
+            count_of_constraints = len(list(conditions[0].values())[0])
 
             #creates asingle string with all constraints for ECLiPSe
-            set_of_conditions = "(" + ') and ('.join([f(x) for x in list(range(count_of_constraints))])+")"
+            set_of_conditions = "(" + ') and ('.join([lambdalise(x) for x in list(range(count_of_constraints))])+")"
 
             # ECLiPSe uses a single = to denote equality, Python uses ==
             set_of_conditions = set_of_conditions.replace('==','=')
@@ -463,7 +443,7 @@ class FuncDef(object):
             print('result_dict',result_dict)
             self.return_dict[path] = []
             self.return_dict[path].append(result_dict)
-            self.return_dict[path].append(self.path_dict[path]['Variables'][0]['return'])
+            self.return_dict[path].append(variables[0]['return'])
 
             print("\nAnalysing Path for satisfiability\n")
 
@@ -527,7 +507,7 @@ def logic(number, output_dir, path, constraint, symbol_vars):
         log.write("    write(\"~~{0}~~{1}~~##\"),\n".format(path, constraint))
         log.write("    ptc_solver__clean_up,\n")
         log.write("    ptc_solver__default_declarations,\n")
-        log.write("    ptc_solver__type(Type0, real, range_bounds(-10.0, 30.0)),\n")
+        log.write("    ptc_solver__type(Type0, real, range_bounds(-100.0, 300.0)),\n")
         log.write("    ptc_solver__variable([{0}], Type0),\n".format(symboltext))
         log.write("    ptc_solver__sdl({0}),\n".format(constraint))
         log.write("    ptc_solver__label_reals([{0}]),\n".format(symboltext))

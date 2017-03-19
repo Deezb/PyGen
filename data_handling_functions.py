@@ -157,9 +157,10 @@ def post_to_in(postfix_list):
 def symbolise(symbolic_dict, target,  assignment):
     """
     This function takes as arguments
-    1: a dictionary of variables and their symbolic values
-    2: an equation
-    the equation will be used to alter the symbolic values of a variable
+    1: symbolic_dict        : a dictionary of variable_names and their symbolic_variable_values
+    2: an equation target   : the variable to change
+    3: an equation value    : the change to insert
+    return                  : altered symbolic_dict
     """
     return_list = []
     for elem in assignment:
@@ -177,7 +178,6 @@ def extract(symbolic_dict, condition):
     """
     this function takes the current symbolic dictionary and a condition and
     returns the symbolic expression as a list of operators and operands
-
     :param symbolic_dict:
     :param condition:
     :return:
@@ -205,8 +205,8 @@ def read_source_file(source_file):
 
 
 def main():
-    create_config()
-    """
+    #create_config()
+
     sym_dict = {
         'x': ['Sym0', '*', '5', '+', '4'],
     }
@@ -219,6 +219,6 @@ def main():
     print(sym_dict3)
     ret = post_to_in(['3','5','*','5','6','+','*'])
     print(ret)
-    """
+
 if __name__ == '__main__':
     main()

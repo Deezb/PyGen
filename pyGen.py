@@ -70,8 +70,11 @@ def main():
     content = dhf.read_source_file(source_file)
 
     # convert the file contents to an Abstract Syntax Tree
-    ast_tree_source = ast.parse(content)
-
+    try:
+        ast_tree_source = ast.parse(content)
+    except IndentationError:
+        print("There was a problem with the indentation in that source file")
+        return 0
     # this creates the data structure object for traversing the tree
     ast_object = sourceTree.SourceTree(ast_tree_source)
 
@@ -89,7 +92,7 @@ def main():
     list_of_functions = [ node_number[0] for node_number in ast_object.nodevals if node_number[5] == 'FunctionDef']
     list_of_classes = [node_number[0] for node_number in ast_object.nodevals if node_number[5] == 'ClassDef']
 
-    log_info('classes = ',list_of_classes)
+    log_info('classes = {0}'.format(str(list_of_classes)))
 
     # Start FunctionDef analysis
     print('Iterate through Functions')
@@ -125,6 +128,9 @@ def main():
         pprint(function_object.paths)
         # At this point the function is broken into paths and the paths need to be tested
         #function_object.make_path_dict()
+
+
+        function_object.build_paths()
 
         function_object.symbolically_execute_paths()
 

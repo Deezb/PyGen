@@ -15,7 +15,7 @@ def make_unit_tests(filename, dictionary):
     for function in functions:
         fullfilepathlist = filename.split('\\')
         step_up_directory = fullfilepathlist[-2]
-        selectedfilename = fullfilepathlist[-1].strip('.py')
+        selectedfilename = fullfilepathlist[-1][:-3] #.strip('.py')
         testfilename = ["pygen_unit_tests", "test_" + selectedfilename + ".py"]
 
         testfilepath =  fullfilepathlist[:-2]
@@ -63,12 +63,14 @@ def make_unit_tests(filename, dictionary):
                 inputs = [str(input_values['Sym'+str(i)]) for i in input_range]
                 input_parameters = ', '.join(inputs)
                 simpd_form = simplify(formula)
-                test_text = '"""This test is using the path {0} \nand is using input values of {1}\nThe expected result is {2} \nbased on the symbolic formula {3}\nWhich simplifies to {4}"""'.format(test_flow_path,
-                                                                                       input_values,
-                                                                                       expected_return,
-                                                                                       formula,
-                                                                                       simpd_form
-                                                                                       )
+                test_text = '"""This test is using the path {0} \nand is using input values of {1} \
+                \nThe expected result is {2} \nbased on the symbolic formula {3}\nWhich simplifies \
+                to {4}"""'.format(  test_flow_path,
+                                    input_values,
+                                    expected_return,
+                                    formula,
+                                    simpd_form
+                                )
                 fl.write("  def {0}(self):\n".format(test_name))
                 fl.write('      {0}\n'.format(test_text))
                 fl.write("      expected_result = {0}\n".format(expected_return))
