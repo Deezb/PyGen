@@ -46,6 +46,7 @@ def main():
         if sys.argv[1] == 'conf':
             dhf.create_config()
 
+    # load configuration settings
     config = dhf.get_config()
 
     source_directory = config['SOURCE_DIR']
