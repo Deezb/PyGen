@@ -1,17 +1,15 @@
 import data_handling_functions as dhf
 import ast
 from ast_decompiler import decompile
-import collections
 from collections import Counter
 from subprocess import Popen, PIPE
 from itertools import chain
-from sympy import simplify
 
 import logging
 log_info = logging.info
 """This file is given the head node of a function and
 returns a set of test data sets and results"""
-LOOP_LIST = [0,1,5]
+LOOP_LIST = [0, 1, 5]
 
 # define the rational bounds for the Prolog search, in the format 'low_value , high_value'
 RANGE_BOUNDS = '-100.0, 300.0'
@@ -77,7 +75,6 @@ class FuncDef(object):
         self.path_dict = {}
         self.return_dict = {}
         self.path_codes_list = {}
-
 
     """This function takes the function paramaters and sets up Symbolic variables and variables for them"""
     def get_variables_from_args(self):
@@ -234,7 +231,6 @@ class FuncDef(object):
                 log_info("{0} doesn't have {1}".format(path, parents))
                 untouched_paths.append(path)
 
-
         if active_paths_true or active_paths_false:
             self.paths = active_paths_true + active_paths_false + untouched_paths
             log_info('paths list now contains {0}'.format(self.paths))
@@ -272,7 +268,6 @@ class FuncDef(object):
         self.conditional_count += 1
         this_wh_t = 'WH' + str.zfill(str(self.conditional_count), 3) + 'T'
         this_wh_f = 'WH' + str.zfill(str(self.conditional_count), 3) + 'F'
-        loop_iteration_number = 0
 
         # set up the sections of the structure defaulting to not existing
         # initiate variables to store linenos for the three conditional sections
@@ -301,24 +296,26 @@ class FuncDef(object):
         else:
             log_info('{0} does not exist'.format(this_wh_f))
 
-        # add new paths to the path list
+        # split each path that contains this while loop to include a path for True and False code blocks
         active_paths_true = []
-        #active_paths_false = []
         untouched_paths = []
         log_info('paths contains {0}'.format(str(self.paths)))
         parents = self.active_code_block
 
         for a_path in self.paths:
-
+            # this is the code block that the while statement is in
             direct_parent_code_block = parents[-1]
 
+            # if this path contains this while loop
             if direct_parent_code_block in a_path:
+                # then remove this path
+                # and for each entry in the LOOP_LIST insert a new path
                 log_info('{0} has {1}'.format(a_path, direct_parent_code_block))
                 if body_lineno != 0:
                     for path_cycles in LOOP_LIST:
-                        current_new_path = [a_path + [this_wh_f] + [this_wh_t] * path_cycles ]
+                        current_new_path = [a_path + [this_wh_f] + [this_wh_t] * path_cycles]
                         active_paths_true += current_new_path
-                        print('active_paths += ', current_new_path )
+                        print('active_paths += ', current_new_path)
             else:
                 log_info("{0} doesn't have {1}".format(a_path, parents))
                 untouched_paths.append(a_path)
@@ -364,13 +361,13 @@ class FuncDef(object):
         # iterate paths to build constraints for each path
         for path in self.paths:
 
-            #create the paths name
+            # create the paths name
             function_name = [self.head.name]
             function_name.extend([item for item in path])
             path_name = 'xx'.join(function_name)
 
             # initialise the code list for this path
-            basic_run = block_code_dict['list_identity']
+            path_codes_list = block_code_dict['list_identity']
             path.remove('list_identity')
             loops = Counter(path)
 
@@ -390,21 +387,23 @@ class FuncDef(object):
                 # start is used to find the list insert position
                 start = 0
                 # increment start, until the next line of code should be after it
-                if basic_run:
-                    while start < len(basic_run) and basic_run[start][1] < block_start:
+                if path_codes_list:
+                    while start < len(path_codes_list) and path_codes_list[start][1] < block_start:
                         start += 1
 
                 # if this code block only happens once, and it is not empty
                 if loops[block_name] == 1 and not block_statements:
-                    # if the code block is empty just insert the constarint into the basic run list
-                    basic_run = basic_run[:start] + [[block_value,block_start]] + basic_run[start:]
+                    # if the code block is empty just insert the constraint into the basic run list
+                    path_codes_list = path_codes_list[:start] + [[block_value, block_start]] + path_codes_list[start:]
                 else:
-                    # else insert the constraint and the code list into the basic_run list
-                    basic_run = basic_run[:start] + ([[block_value,block_start]] + block_code_dict[block_name]) + basic_run[start:]
+                    # else insert the constraint and the code list into the path_codes_list list
+                    path_codes_list = path_codes_list[:start] +\
+                                      ([[block_value, block_start]] + block_code_dict[block_name]) +\
+                                      path_codes_list[start:]
 
-            path_dicty[path_name] = basic_run
+            path_dicty[path_name] = path_codes_list
 
-        print('path building complete, paths found = {0}'.format(len(path_dicty)) )
+        print('path building complete, paths found = {0}'.format(len(path_dicty)))
         self.path_codes_list = path_dicty
 
     def symbolically_execute_paths(self):
@@ -434,7 +433,7 @@ class FuncDef(object):
                 # process a conditional
                 # when a conditional is met we need to extract its meaning from the current symbolic execution
                 # and add the constraint to the set of path constraints
-                constraint  =  dhf.extract(this_path_variables, line[0].split(' '))
+                constraint = dhf.extract(this_path_variables, line[0].split(' '))
                 this_path_constraints.setdefault(path, []).append(constraint)
             else:
                 print("Weird element has crawled into the the path structure, it is not a tuple or a list")
@@ -442,27 +441,27 @@ class FuncDef(object):
 
     def test_path_constraints(self):
 
-        count=0
+        count = 0
         for path in self.path_dict.keys():
-            count +=1
+            count += 1
             conditions = self.path_dict[path]["Conditions"]
             variables = self.path_dict[path]["Variables"]
 
             # this lambda takes a comma separated list and coverts it to a string
             # ['', 'not', '(', 'Sym0', '>', '5', ')'] gets converted to  "not ( Sym0 > 5)"
-            lambdalise = lambda x: ' '.join(list(conditions[0].values())[0][x])
+            lambda_me = lambda x: ' '.join(list(conditions[0].values())[0][x])
             count_of_constraints = len(list(conditions[0].values())[0])
 
-            #creates asingle string with all constraints for ECLiPSe
-            set_of_conditions = "(" + ') and ('.join([lambdalise(x) for x in list(range(count_of_constraints))])+")"
+            # creates asingle string with all constraints for ECLiPSe
+            set_of_conditions = "(" + ') and ('.join([lambda_me(x) for x in list(range(count_of_constraints))]) + ")"
 
             # ECLiPSe uses a single = to denote equality, Python uses ==
-            set_of_conditions = set_of_conditions.replace('==','=')
+            set_of_conditions = set_of_conditions.replace('==', '=')
 
             # call to write and run ECLiPSe for each path
-            out, result_dict = logic(count, self.output_dir, str(path),set_of_conditions, self.symbolic_variables)
+            out, result_dict = logic(count, self.output_dir, str(path), set_of_conditions, self.symbolic_variables)
             # print(out)
-            print('result_dict',result_dict)
+            print('result_dict', result_dict)
             self.return_dict[path] = []
             self.return_dict[path].append(result_dict)
             self.return_dict[path].append(variables[0]['return'])
@@ -474,14 +473,14 @@ class FuncDef(object):
     the dictionary self.return_dict
     """
     def filter_returned_paths(self):
-        self.return_dict = {key:value for key,value in self.return_dict.items() if value[0]}
+        self.return_dict = {key: value for key, value in self.return_dict.items() if value[0]}
 
     """
     This method processes the satisfiable paths into a dictionary of
     unit tests, each dictionary key is the flow path
      each dictionary value is a list containing the expected result """
     def evaluate_expected_results(self):
-        #keys is the path name, itemz is a list with
+        # keys is the path name, itemz is a list with
         # itemz[0] = input values
         # itemz[1] = postfix return equation for path
         for keys, itemz in self.return_dict.items():
@@ -497,7 +496,7 @@ class FuncDef(object):
             try:
                 expected_return = eval(equation_string)
             except NameError:
-                expected_return= "\'" + equation_string + "\'"
+                expected_return = "\'" + equation_string + "\'"
             print("##################################################################################\n")
             print(keys)
             print(self.path_dict[keys]['Conditions'])
@@ -505,19 +504,21 @@ class FuncDef(object):
             print('Symbolic equation for path = ', ''.join(infix_path_return_eqn))
             print('Symbolic values for path   = ', itemz[0])
             print('equation with values       = ', equation_string)
-            print('expected result            = ',expected_return,'\n')
+            print('expected result            = ', expected_return, '\n')
 
             self.return_dict[keys].append([expected_return])
         print("##################################################################################\n")
 
+
 def chunks(whole, size):
     """Yield successive n-sized chunks from list chunks."""
     for x in range(0, len(whole), size):
-        yield whole[x : x + size]
+        yield whole[x: x + size]
+
 
 # this needs a list of symbolic values and to create the files based on that list
 def logic(number, output_dir, path, constraint, symbol_vars):
-    output_dir = output_dir.replace('\\','/')
+    output_dir = output_dir.replace('\\', '/')
     filename = output_dir + "path" + str(number) + ".pl"
     # write a .pl file
     symbols = sorted([value for value in symbol_vars.values()])
@@ -557,17 +558,21 @@ def logic(number, output_dir, path, constraint, symbol_vars):
     symbolic_results_list_pairs = full_eclipseclp_output_text.split('##')[2:]
 
     result_dict = {}
-    symbolic_value= None
-    symbolic_result_list_rational = list(chunks(symbolic_results_list_pairs , 2))
+    symbolic_value = None
+    symbolic_result_list_rational = list(chunks(symbolic_results_list_pairs, 2))
     for result_list in symbolic_result_list_rational:
-        symbolic_value= result_list
+        symbolic_value = result_list
         # if the result is in rational number string form 63_2 = 63/2 = 31.5
         if '_' in result_list[1]:
             symbolic_value = result_list[1].split('_')
-            symbolic_value = float(symbolic_value[0])/float(symbolic_value[1])
+            symbolic_value = float(symbolic_value[0]) / float(symbolic_value[1])
         result_dict[result_list[0]] = symbolic_value
     if path_condition_text and symbolic_value:
-        print("results for path \n\t",path_condition_text[0],path_condition_text[1],symbolic_results_list_pairs, result_dict['Sym0'])
+        print("results for path \n\t",
+              path_condition_text[0],
+              path_condition_text[1],
+              symbolic_results_list_pairs,
+              result_dict['Sym0'])
     elif path_condition_text:
-        print("results for path \n\t",path_condition_text[0],path_condition_text[1])
+        print("results for path \n\t", path_condition_text[0], path_condition_text[1])
     return outs, result_dict
