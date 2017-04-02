@@ -27,14 +27,10 @@ The evaluation techniques of Symbolic Execution and Constraint logic programming
 
 This module is the main program.
 It requires setting up a configuration settings section in a gui to handle the followiing
- 1. Source File Name
-
- # not implemented yet
- 2. Test folder location
- 3. ECLiPSe path location (may be set through the system path ECLIPSEDIR variable either.
- 4. Temp directory setting (this package currently uses tempfiles for processing and allows the setting of a location
-    for placing these files, if left blank the default directory is chosen as the folder
-    that the test files are to be placed in)
+ 1. pyGen program folder - the folder where pyGen was installed C:/PyGen/PyGen if followed installation
+ 2. Test folder location - folder where sample Python files are placed, makes choosing easier
+ 3. ECLiPSe path directory - folder that Eclipse is installed, main folder (not /bin)
+ 4. ECLiPSe pl files directory - for placing temporary Prolog files during the program run.
 
 """
 
@@ -50,13 +46,9 @@ def main():
     config = dhf.get_config()
 
     source_directory = config['SOURCE_DIR']
-    eclipse_dir = config['ECLIPSE_DIR']
     eclipse_file_dir = config['ECLIPSE_FILES_DIR']
-    pygen_dir = config['PYGEN_DIR']
 
     source_file = ""
-    # mac ECLiPSe installation not working yet, so Darwin/Mac  option is invalid at the moment
-    # the paths can be generated and the program fails at eclipse launch. needs try except
 
     try:
         source_file = dhf.get_source_file(source_directory)
@@ -73,8 +65,9 @@ def main():
     # convert the file contents to an Abstract Syntax Tree
     try:
         ast_tree_source = ast.parse(content)
-    except IndentationError:
+    except IndentationError as err:
         print("There was a problem with the indentation in that source file")
+        print(err.msg, 'on line', err.lineno)
         return 0
     # this creates the data structure object for traversing the tree
     ast_object = sourceTree.SourceTree(ast_tree_source)
@@ -149,7 +142,7 @@ def main():
         function_object.evaluate_expected_results()
 
         # send the result structure for extraction to Unit Test Files
-        utm.make_unit_tests(source_file, function_object.return_dict)
+    utm.make_unit_tests(source_file, function_objects_list)
 
 
 if __name__=='__main__':

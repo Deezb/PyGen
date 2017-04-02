@@ -352,8 +352,6 @@ class FuncDef(object):
         for line in self.list_of_statements_in_function:
             block_code_dict[line[3][-1]].append(line)
 
-        print('check for a')
-
         # loop through paths
         for path in self.paths:
             function_name = [self.head.name]

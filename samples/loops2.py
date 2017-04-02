@@ -10,3 +10,11 @@ def sect1(x, y):
             #print('a= ', a, ', b= ', b)
             b = b + 2
     return b + a * 3
+
+def sect2(x,y):
+    a = 4 * x + 7
+    b = 3 * y + 5
+    if a>=b:
+        return a
+    else:
+        return b
