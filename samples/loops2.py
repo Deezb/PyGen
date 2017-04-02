@@ -18,3 +18,4 @@ def sect2(x,y):
         return a
     else:
         return b
+    a = a +1

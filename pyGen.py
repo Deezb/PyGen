@@ -75,7 +75,7 @@ def main():
     # this runs the node extraction process
     ast_object.process_source_code()
 
-    # this creates the complete node list for the source code
+    # this creates the complete node list for the source code 'nodevals'
     ast_object.construct_node_data_list()
 
     # then add the FunctionDef nodes to the structure
@@ -95,7 +95,8 @@ def main():
     # iterate through the list of indices
     for function in list_of_functions:
 
-        # create an object to store this function
+        # create an object to store this function, this points the function_object at the id
+        # which is the memory address of the function node
         function_object = function_paths.FuncDef(ast_object.nodevals[function][6], output_dir)
 
         # extract the functions name

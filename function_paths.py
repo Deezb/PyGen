@@ -13,6 +13,10 @@ log_info = logging.info
 returns a set of test data sets and results"""
 LOOP_LIST = [0,1,5]
 
+# define the rational bounds for the Prolog search, in the format 'low_value , high_value'
+RANGE_BOUNDS = '-100.0, 300.0'
+
+
 def get_variable_name(section):
     variable_names = []
     for target in section.targets:
@@ -253,7 +257,8 @@ class FuncDef(object):
     def process_return(self, statement):
         text = decompile(statement).strip('\n').replace("return ", "")
         line = statement.lineno
-        self.list_of_statements_in_function.append(('Return', line, [('return', text)], self.active_code_block))
+        current_active_list = [node for node in self.active_code_block]
+        self.list_of_statements_in_function.append(('Return', line, [('return', text)], current_active_list))
         log_info('Return statement found, adding to list of statements = {0}'.format(text))
 
     # ###################################################################################################
@@ -345,39 +350,58 @@ class FuncDef(object):
         #
         block_code_dict = {}
         path_dicty = {}
-        #  ['IF001F', 'WH002F', 'IF001T', 'WH003T', 'list_identity', 'WH003F', 'WH002T']
+        # Make the list of all code blocks in the function
+        # e.g. ['IF001F', 'WH002F', 'IF001T', 'WH003T', 'list_identity', 'WH003F', 'WH002T']
         all_block_list = list(set(chain.from_iterable(self.paths)))
+
+        # set up a dictionary to hold the code for each code block
         for block in all_block_list:
             block_code_dict.setdefault(block, [])
         for line in self.list_of_statements_in_function:
+            # put each statement into its appropriate code block
             block_code_dict[line[3][-1]].append(line)
 
-        # loop through paths
+        # iterate paths to build constraints for each path
         for path in self.paths:
+
+            #create the paths name
             function_name = [self.head.name]
             function_name.extend([item for item in path])
             path_name = 'xx'.join(function_name)
+
+            # initialise the code list for this path
             basic_run = block_code_dict['list_identity']
             path.remove('list_identity')
             loops = Counter(path)
 
-
+            # insert nested conditons and code blocks into paths code list
             for block_name in path:
+
+                # lineno of the start of the inserted block
                 block_start = self.conditions_dict[block_name][0]
+
+                # constraint to insert
                 block_value = self.conditions_dict[block_name][1]
+
+                # get the list of statement in this code block
                 block_statements = block_code_dict[block_name]
 
+                # find the position of the insertion point in the list of statements
+                # start is used to find the list insert position
                 start = 0
+                # increment start, until the next line of code should be after it
                 if basic_run:
-                    while basic_run[start][1] < block_start and start < len(basic_run)-1:
+                    while start < len(basic_run) and basic_run[start][1] < block_start:
                         start += 1
 
+                # if this code block only happens once, and it is not empty
                 if loops[block_name] == 1 and not block_statements:
+                    # if the code block is empty just insert the constarint into the basic run list
                     basic_run = basic_run[:start] + [[block_value,block_start]] + basic_run[start:]
                 else:
+                    # else insert the constraint and the code list into the basic_run list
                     basic_run = basic_run[:start] + ([[block_value,block_start]] + block_code_dict[block_name]) + basic_run[start:]
 
-                print("what now")
             path_dicty[path_name] = basic_run
 
         print('path building complete, paths found = {0}'.format(len(path_dicty)) )
@@ -505,7 +529,7 @@ def logic(number, output_dir, path, constraint, symbol_vars):
         log.write("    write(\"~~{0}~~{1}~~##\"),\n".format(path, constraint))
         log.write("    ptc_solver__clean_up,\n")
         log.write("    ptc_solver__default_declarations,\n")
-        log.write("    ptc_solver__type(Type0, real, range_bounds(-100.0, 300.0)),\n")
+        log.write("    ptc_solver__type(Type0, real, range_bounds({0})),\n".format(RANGE_BOUNDS))
         log.write("    ptc_solver__variable([{0}], Type0),\n".format(symboltext))
         log.write("    ptc_solver__sdl({0}),\n".format(constraint))
         log.write("    ptc_solver__label_reals([{0}]),\n".format(symboltext))

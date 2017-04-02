@@ -205,20 +205,23 @@ def read_source_file(source_file):
 
 
 def main():
-    #create_config()
-
+    # test for postfix_from_infix_list
     sym_dict = {
         'x': ['Sym0', '*', '5', '+', '4'],
     }
     sym_dict2 = {key: postfix_from_infix_list(value) for key, value in sym_dict.items()}
 
+
     f = postfix_from_infix_list(['3', '+', 'x', '*', '6'])
     print(f)
-    t= 'y'
+
+    # test for post_to_in
+    t = 'y'
     sym_dict3 = symbolise(sym_dict2, t, f)
-    print(sym_dict3)
+    print('sym3 =', sym_dict3)
+
     ret = post_to_in(['3','5','*','5','6','+','*'])
-    print(ret)
+    print('ret=',ret)
 
 if __name__ == '__main__':
     main()
