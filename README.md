@@ -10,7 +10,9 @@
 #### Running 'python pyGen.py conf' will restart the configuration set-up run.
 ## How do I run PyGen?
 #### to run pyGen type 'python PyGen.py' at a command prompt, or 'pyg' to run the batch file
-#### When pyGen is run it opens an easygui file dialogue. The user selects a .py module to analyse. The file is parsed using Pythons ast module. Functions in the code are identified. Paths through the functions are identified. Symbolic Execution is used to produce constraints for each path, the constraints are searched for satisfiability using ECLiPSe and the PTC_solver library. 
+#### When pyGen is run it opens an easygui file dialogue. The user selects a .py module to analyse. 
+## How does it work?.
+#### The file is parsed using Pythons ast module. Functions in the code are identified. Paths through the functions are identified. Symbolic Execution is used to produce constraints for each path, the constraints are searched for satisfiability using ECLiPSe and the PTC_solver library. 
 #### (This version finds every path through a function and checks each one for satisfiability). It is proposed in future versions to check each stage moving down through the execution paths for satisfiability to reduce path explosion by pruning unsatisfiable branches, reducing time and memory wasted creating paths for impossible branches.
 
 #### This version writes a module of unit tests which contains all of the unit tests for a selected module. The file of unit tests is currently placed in a folder in the same directory as the parent folder of the file being tested. so for a structure  /dir1/dir2/file1.py being tested creates the folder 
