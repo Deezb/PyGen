@@ -7,10 +7,8 @@
 ## Where can I get it?
 #### To install the running environment requires installing the ECLiPSe Costraint Logic Program and other requirements. There is a full instruction guide but it has only been developed to work with windows 10. The full instructions can be found in these [Installation Instructions](https://docs.google.com/document/d/1gPboXoGlH9d6aEAXDhE3QyvrDMruXUCoyoJ3Rbfh4Wc/edit?usp=sharing)
 ## How do I run PyGen?
-### When the module pyGen.py is run it requests a filename to analyse using the easygui open file dialogue. 
-### to run pyGen type 'python PyGen.py' at a command prompt, or 'pyg' to run the batch file
-### The user selects a .py module to analyse.
-#### The file is parsed using the ast module.
+#### to run pyGen type 'python PyGen.py' at a command prompt, or 'pyg' to run the batch file
+#### When pyGen is run it opens an easygui file dialogue. The user selects a .py module to analyse. The file is parsed using Pythons ast module.
 #### Paths through the code are identified.
 ## Can I reconfigure the setup folders?
 ### Running 'python pyGen.py conf' will restart the configuration set-up run.
