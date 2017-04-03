@@ -11,7 +11,7 @@
 ## How do I run PyGen?
 #### to run pyGen type 'python PyGen.py' at a command prompt, or 'pyg' to run the batch file
 #### When pyGen is run it opens an easygui file dialogue. The user selects a .py module to analyse. And that is all, the software does the rest, it outputs a file with unit tests which the programmer can use to ensure that their program behaves as expected.
-## How does it work?.
+## How does it work?
 #### The file is parsed using Pythons ast module. Functions in the code are identified. Paths through the functions are identified. Symbolic Execution is used to produce constraints for each path, the constraints are searched for satisfiability using ECLiPSe and the PTC_solver library. 
 #### (This version finds every path through a function and checks each one for satisfiability). It is proposed in future versions to check each stage moving down through the execution paths for satisfiability to reduce path explosion by pruning unsatisfiable branches, reducing time and memory wasted creating paths for impossible branches.
 
