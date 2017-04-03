@@ -2,12 +2,11 @@
 ## Automatically generate unit testing data sets for Python 3.5.2  
 #### this is version 0.0.2, This version creates Unit Test modules from selected source files. 
 ## What it can do?
-#### PyGen creates unit tests from source code, it works withfunctions, conditionals, while loops and assignments over rational domains.
-#### this version works with simple parameters, but does work with loops, lists, dicts, sets, tuples or comprehensions.
+#### PyGen creates unit tests from source code, it works with functions, conditionals, while loops and assignments over rational domains. This version only works with simple parameters, it does work with loops, lists, dicts, sets, tuples or comprehensions.
 #### This code is part of a final yr college project to investigate the automatic generation of unit test data sets for Python.
 ## Where can I get it?
-To install the running environment requires installing the ECLiPSe Costraint Logic Program and other requirements, full instructions can be found in these [Installation Instructions](https://docs.google.com/document/d/1gPboXoGlH9d6aEAXDhE3QyvrDMruXUCoyoJ3Rbfh4Wc/edit?usp=sharing)
-# How do I run PyGen?
+#### To install the running environment requires installing the ECLiPSe Costraint Logic Program and other requirements. There is a full instruction guide but it has only been developed to work with windows 10. The full instructions can be found in these [Installation Instructions](https://docs.google.com/document/d/1gPboXoGlH9d6aEAXDhE3QyvrDMruXUCoyoJ3Rbfh4Wc/edit?usp=sharing)
+## How do I run PyGen?
 ### When the module pyGen.py is run it requests a filename to analyse using the easygui open file dialogue. 
 ### to run pyGen type 'python PyGen.py' at a command prompt, or 'pyg' to run the batch file
 ### The user selects a .py module to analyse.
