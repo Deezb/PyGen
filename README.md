@@ -2,7 +2,7 @@
 ## Automatically generate unit testing data sets for Python 3.5.2  
 #### this is version 0.0.2, This version creates Unit Test modules from selected source files. 
 ## What it can do?
-#### It works with functions, conditionals, while loops and assignments over rational domains.
+#### PyGen creates unit tests from source code, it works withfunctions, conditionals, while loops and assignments over rational domains.
 #### this version works with simple parameters, but does work with loops, lists, dicts, sets, tuples or comprehensions.
 #### This code is part of a final yr college project to investigate the automatic generation of unit test data sets for Python.
 ## Where can I get it?
