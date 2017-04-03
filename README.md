@@ -1,20 +1,20 @@
 # PyGen
-##Automatically generate unit testing data sets for Python 3.5.2  
+## Automatically generate unit testing data sets for Python 3.5.2  
 #### this is version 0.0.2, This version creates Unit Test modules from selected source files. 
-####It works with functions, conditionals and assignments over rational domains.
+#### It works with functions, conditionals and assignments over rational domains.
 #### this version works with simple parameters, but does work with loops, lists, dicts, sets, tuples or comprehensions.
 #### This code is part of a final yr college project to investigate the automatic generation of unit test data sets for Python.
 To install the running environment requires installing the ECLiPSe Costraint Logic Program and other requirements, full instructions can be found in these [Installation Instructions](https://docs.google.com/document/d/1gPboXoGlH9d6aEAXDhE3QyvrDMruXUCoyoJ3Rbfh4Wc/edit?usp=sharing)
 
 ###When the module pyGen.py is run it requests a filename to analyse using the easygui open file dialogue. 
 ### The user selects a .py module to analyse.
-####The file is parsed using the ast module.
+#### The file is parsed using the ast module.
 #### Paths through the code are identified.
 #### Symbolic Execution is used to produce constraints for each path, the constraints are searched for satisfiability using a constraint solver.
 #### (This version finds every path through a function and checks each one for satisfiability)
 It is proposed in future versions to check each stage moving down through the execution paths for satisfiability to reduce path explosion by pruning unsatisfiable branches, reducing time and memory wasted creating paths for impossible branches.
 
-####This version writes a module of unit tests which contains all of the unit tests for a selected module. 
+#### This version writes a module of unit tests which contains all of the unit tests for a selected module. 
 The file of unit tests is currently placed in a folder in the same directory as the parent folder of the file being tested. 
 so for a structure  /dir1/dir2/file1.py being tested creates the folder 
                     /dir1/pygen_unit_test/test_file1.py
