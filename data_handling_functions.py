@@ -179,7 +179,7 @@ def extract(symbolic_dict, condition):
     this function takes the current symbolic dictionary and a condition and
     returns the symbolic expression as a list of operators and operands
     :param symbolic_dict:
-    :param condition:
+    :param condition: the conditional expression as a list of infix variables
     :return:
     """
     return_list = []
